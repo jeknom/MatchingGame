@@ -6,11 +6,11 @@ using UnityEngine;
 public class GameLogic : MonoBehaviour 
 {
 	public GameObject BlockPrefab;
-	public GameObject[,] BlockGrid = new GameObject[8, 8];
+	public GameObject[,] BlockGrid = new GameObject[14, 8];
 
 	private void Start () 
 	{
-		for (int y = 0; y < 8; y++)
+		for (int y = 0; y < 14; y++)
 		{
 			for (int x = 0; x < 8; x++)
 			{

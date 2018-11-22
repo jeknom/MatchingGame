@@ -1,26 +1,27 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public enum BlockType
+public class Block : MonoBehaviour, IBlock
 {
-	Blue,
-	Green,
-	Red,
-	Yellow
+	public int x { get; set; }
+	public int y { get; set; }
+
+	public GameObject GetObject() 
+	{ 
+		return this.gameObject;
+	}
+
+	public void Destroy()
+	{
+		Destroy(this.gameObject);
+	}
 }
 
-public class Block : MonoBehaviour 
+public interface IBlock
 {
-	public Vector3 Coodinates;
-	public BlockType Colour;
-	public List<Material> Materials = new List<Material>();
-	public int GridPosX, GridPosY;
+	int x { get; set; }
+	int y { get; set; }
 
-	private void Start ()
-	{
-		Colour = (BlockType)UnityEngine.Random.Range(0, 4);
-		GetComponent<MeshRenderer>().material = Materials[(int)Colour];
-	}
+	GameObject GetObject();
+	void Destroy();
 }

@@ -14,4 +14,9 @@ public class GameLogic : MonoBehaviour
 				grid.Move(grid.Blocks[x, y], x, y);
 			}
 	}
+
+	private void Update() 
+	{
+		grid.DestroyTarget(new Mouse());
+	}
 }

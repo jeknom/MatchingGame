@@ -16,4 +16,15 @@ public class Grid
     {
         block.GetObject().transform.position = new Vector3 (x, y, 0);
     }
+
+    public void DestroyTarget(IPlayerControls controls)
+	{
+		var target = controls.GetInteraction();
+
+		if (target != null && target.gameObject.tag == "Block")
+		{
+            _blockGrid[target.GetComponent<IBlock>().x, target.GetComponent<IBlock>().y] = null;
+			MonoBehaviour.Destroy(target);
+		}
+	}
 }

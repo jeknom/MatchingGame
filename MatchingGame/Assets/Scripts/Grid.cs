@@ -40,7 +40,7 @@ public class Grid
         foreach (var row in _blockGrid)
         {
             var target = row.SingleOrDefault(b => b == block);
-            
+
             if (target != null && !IsCascading)
             {
                 target.Destroy();

@@ -3,14 +3,15 @@ using UnityEngine;
 
 public class Block : MonoBehaviour, IBlock
 {
-	public int x { get; set; }
-	public int y { get; set; }
+	[SerializeField] private Material[] colours;
+	private Material _material;
 
-	[SerializeField] private Material[] colour;
+	public Material Colour { get { return _material; } }
 
 	private void OnEnable ()
 	{
-		GetComponent<MeshRenderer>().material = colour[UnityEngine.Random.Range(0, 4)];
+		_material = colours[UnityEngine.Random.Range(0, 4)];
+		GetComponent<MeshRenderer>().material = _material;
 	}
 
 	public GameObject GetObject() 

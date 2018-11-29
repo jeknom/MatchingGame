@@ -4,19 +4,22 @@ using UnityEngine;
 public class Block : MonoBehaviour, IBlock
 {
 	[SerializeField] private Material[] colours;
-	private Material _material;
-
-	public Material Colour { get { return _material; } }
+	private Material material;
 
 	private void OnEnable ()
 	{
-		_material = colours[UnityEngine.Random.Range(0, 4)];
-		GetComponent<MeshRenderer>().material = _material;
+		material = colours[UnityEngine.Random.Range(0, 4)];
+		GetComponent<MeshRenderer>().material = material;
 	}
 
 	public GameObject GetObject() 
 	{ 
 		return this.gameObject;
+	}
+
+	public Material GetMaterial()
+	{
+		return this.material;
 	}
 
 	public void Destroy()

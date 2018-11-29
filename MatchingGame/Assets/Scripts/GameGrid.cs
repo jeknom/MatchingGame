@@ -8,11 +8,13 @@ public class GameGrid
 {
     private const int _width = 5;
     private const int _height = 6;
-    private const float CascadeSpeed = 0.01f;
+    private const float CascadeSpeed = 0.5f;
     private List<List<IBlock>> _blockGrid = new List<List<IBlock>>();
     
     public int Width { get { return _width; } }
     public int Height { get { return _height; } }
+    public bool IsCascading { get { return _isCascading(); } }
+    public bool IsMissingBlocks { get { return _isMissingBlocks(); } }
     public List<List<IBlock>> Blocks { get { return _blockGrid; } }
 
     public GameGrid()
@@ -63,7 +65,7 @@ public class GameGrid
 
     public IEnumerator Cascade()
     {
-        while (IsCascading())
+        while (_isCascading())
         {
             foreach (var row in _blockGrid)
                 row.ForEach(b => b.GetObject().transform.position = Vector3.MoveTowards(b.GetObject().transform.position, PositionOnGrid(b), CascadeSpeed));
@@ -72,7 +74,7 @@ public class GameGrid
         }
     }
 
-    private bool IsCascading()
+    private bool _isCascading()
     {
         foreach (var row in _blockGrid)
             foreach (var block in row)
@@ -80,6 +82,15 @@ public class GameGrid
                 if (block.GetObject().transform.position != PositionOnGrid(block))
                     return true;
             }
+
+        return false;
+    }
+
+    private bool _isMissingBlocks()
+    {
+        foreach (var row in _blockGrid)
+            if (row.Count != _height)
+                return true;
 
         return false;
     }

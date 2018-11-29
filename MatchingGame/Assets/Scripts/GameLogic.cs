@@ -5,7 +5,7 @@ using UnityEngine;
 public class GameLogic : MonoBehaviour
 {
 	[SerializeField] private Block block;
-	[SerializeField] private Vector3 BlockSpawnPoint = new Vector3(0, 0, 0);
+	[SerializeField] private Vector3 BlockSpawnPoint = new Vector3(20, 0, 0);
 	private GameGrid grid = new GameGrid();
 
 	private void Start() 
@@ -20,11 +20,20 @@ public class GameLogic : MonoBehaviour
 
 	private void Update() 
 	{
-		var mouse = new Mouse();
+		if (grid.IsMissingBlocks)
+			foreach (var row in grid.Blocks)
+				while (row.Count != grid.Height)
+					row.Add(Instantiate(block, BlockSpawnPoint, Quaternion.identity));
 
-		if (mouse.GetInteraction() != null)
-			grid.RemoveBlock(mouse.GetInteraction().GetComponent<Block>());
+		if (!grid.IsCascading)
+		{
+			var mouse = new Mouse();
 
-		StartCoroutine(grid.Cascade());
+			if (mouse.GetInteraction() != null)
+				grid.RemoveBlock(mouse.GetInteraction().GetComponent<Block>());
+
+			StartCoroutine(grid.Cascade());
+		}
+		
 	}
 }

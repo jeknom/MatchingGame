@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 23054727897029644}
   - component: {fileID: 114434171617161676}
   m_Layer: 0
-  m_Name: Block
+  m_Name: Square
   m_TagString: Block
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -84,7 +84,7 @@ MeshFilter:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1036430746746016}
-  m_Mesh: {fileID: 4300000, guid: 91f7063f8485c4cf7ab999926176a5d4, type: 3}
+  m_Mesh: {fileID: 4300000, guid: 59583c0ca370c4846bc0124d3fd8b296, type: 3}
 --- !u!65 &65266924010243434
 BoxCollider:
   m_ObjectHideFlags: 1

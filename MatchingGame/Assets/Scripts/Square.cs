@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-public class Block : MonoBehaviour, IBlock
+public class Square : MonoBehaviour, IBlock
 {
 	[SerializeField] private Material[] colours;
 	private Material material;

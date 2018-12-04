@@ -4,16 +4,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameGrid
+public class GameGrid : MonoBehaviour
 {
-    private const int _width = 5;
-    private const int _height = 6;
-    private const float CascadeSpeed = 0.5f;
+    private const int _width = 6;
+    private const int _height = 11;
+    private const float CascadeSpeed = 10;
     private List<List<IBlock>> _blockGrid = new List<List<IBlock>>();
+    [SerializeField] private Vector3 SpawnPoint;
+    [SerializeField] private Square square;
     
     public int Width { get { return _width; } }
     public int Height { get { return _height; } }
-    public bool IsCascading { get { return _isCascading(); } }
+    public bool NeedsCascading { get { return _needsCascading(); } }
     public bool IsMissingBlocks { get { return _isMissingBlocks(); } }
     public List<List<IBlock>> Blocks { get { return _blockGrid; } }
 
@@ -23,10 +25,25 @@ public class GameGrid
             _blockGrid.Add(new List<IBlock>());
     }
 
-    public void RemoveBlock(IBlock block)
+    public void AddMissingBlocks()
     {
+        foreach (var row in _blockGrid)
+            while (row.Count < _height)
+            {
+                var instantiatedBlock = Instantiate(square, SpawnPoint, Quaternion.identity);
+                instantiatedBlock.transform.parent = gameObject.transform;
+                row.Add(instantiatedBlock);
+            }
+    }
+
+    public void FloodRemove(GameObject squareObject)
+    {
+        if (squareObject == null && squareObject.GetComponent<Square>() == null)
+            throw new InvalidOperationException("Flood remove cannot be used on null objects. Make sure that the GameObject has a Square script component.");
+
+        var square = squareObject.GetComponent<Square>();
         var queue = new Queue<Vector3>();
-        queue.Enqueue(PositionOnGrid(block));
+        queue.Enqueue(PositionOnGrid(square));
 
         var toBeDestroyed = new List<IBlock>();
 
@@ -34,7 +51,7 @@ public class GameGrid
         {
             var current = queue.Dequeue();
 
-            if ((BlockIsValid(current) && _blockGrid[(int)current.x][(int)current.y].GetMaterial() == block.GetMaterial()) && (!toBeDestroyed.Contains(_blockGrid[(int)current.x][(int)current.y])))
+            if ((BlockIsValid(current) && _blockGrid[(int)current.x][(int)current.y].GetMaterial() == square.GetMaterial()) && (!toBeDestroyed.Contains(_blockGrid[(int)current.x][(int)current.y])))
             {
                 toBeDestroyed.Add(_blockGrid[(int)current.x][(int)current.y]);
                 queue.Enqueue(new Vector3(current.x - 1, current.y));
@@ -43,15 +60,11 @@ public class GameGrid
                 queue.Enqueue(new Vector3(current.x, current.y + 1));
             }
         }
-        RemoveBlock(toBeDestroyed);
-    }
-
-    public void RemoveBlock(List<IBlock> blocks)
-    {
-        foreach (var block in blocks)
+        
+        foreach (var squares in toBeDestroyed)
         {
-            block.Destroy();
-            _blockGrid.ForEach(b => b.Remove(block));
+            squares.Destroy();
+            _blockGrid.ForEach(b => b.Remove(squares));
         }
     }
 
@@ -63,18 +76,14 @@ public class GameGrid
         return false;
     }
 
-    public IEnumerator Cascade()
+    public void Cascade()
     {
-        while (_isCascading())
-        {
+        if (_needsCascading())
             foreach (var row in _blockGrid)
-                row.ForEach(b => b.GetObject().transform.position = Vector3.MoveTowards(b.GetObject().transform.position, PositionOnGrid(b), CascadeSpeed));
-            
-            yield return null;
-        }
+                row.ForEach(b => b.GetObject().transform.position = Vector3.MoveTowards(b.GetObject().transform.position, PositionOnGrid(b), CascadeSpeed * Time.deltaTime));
     }
 
-    private bool _isCascading()
+    private bool _needsCascading()
     {
         foreach (var row in _blockGrid)
             foreach (var block in row)

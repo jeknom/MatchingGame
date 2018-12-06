@@ -86,11 +86,16 @@ public class GameGrid : MonoBehaviour
     private bool _needsCascading()
     {
         foreach (var row in _blockGrid)
+        {
+            if (row.Count < _height)
+                return true;
+
             foreach (var block in row)
             {
                 if (block.GetObject().transform.position != PositionOnGrid(block))
                     return true;
             }
+        }
 
         return false;
     }

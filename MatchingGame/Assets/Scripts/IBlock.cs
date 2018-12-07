@@ -4,5 +4,5 @@ public interface IBlock
 {
 	GameObject GetObject();
 	Material GetMaterial();
-	void Destroy();
+	void Activate(GameGrid grid);
 }

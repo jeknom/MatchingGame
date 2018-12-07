@@ -9,10 +9,10 @@ public class GameLogic : MonoBehaviour
 
 	private void Update() 
 	{
-		while (!grid.NeedsCascading && controls.GetInteraction() != null)
-			grid.FloodRemove(controls.GetInteraction());
+		if (controls.GetInteraction() != null)
+			controls.GetInteraction().GetComponent<IBlock>().Activate(grid);
 
-		grid.AddMissingBlocks();
+		grid.FillGrid();
 		grid.Cascade();
 	}
 }

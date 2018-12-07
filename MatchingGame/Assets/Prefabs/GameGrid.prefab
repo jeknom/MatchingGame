@@ -52,4 +52,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SpawnPoint: {x: 0, y: 15, z: 1}
-  square: {fileID: 114434171617161676, guid: 2cdfda9493bbf1f459468b203aadbaea, type: 2}
+  Square: {fileID: 114434171617161676, guid: 2cdfda9493bbf1f459468b203aadbaea, type: 2}

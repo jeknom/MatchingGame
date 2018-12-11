@@ -5,45 +5,40 @@ using UnityEngine;
 public class Square : MonoBehaviour, IBlock
 {
 	[SerializeField] private Material[] colours;
-	private Material material;
-
-	private void OnEnable ()
-	{
-		material = colours[UnityEngine.Random.Range(0, 4)];
-		GetComponent<MeshRenderer>().material = material;
-	}
-
-	public GameObject GetObject() 
+	public GameObject GetObject { get { return gameObject; } }
+	public BlockType blockType { get; set; }
+	public Vector3 GetTransform
 	{ 
-		return this.gameObject;
+		get { return gameObject.transform.position; }
+		set { gameObject.transform.position = value; } 
 	}
 
-	public Material GetMaterial()
+	private void Start ()
 	{
-		return this.material;
+		blockType = (BlockType)UnityEngine.Random.Range(0, 4);
+		GetComponent<MeshRenderer>().material = colours[(int)blockType];
 	}
 
 	public void Activate(GameGrid grid)
 	{
         var toBeDestroyed = new List<IBlock>();
-        var queue = new Queue<Vector3>();
-        queue.Enqueue(grid.PositionToVector(this));
+        
+		var queue = new Queue<IBlock>();
+        queue.Enqueue(this);
 
         while (queue.Count > 0)
         {
             var current = queue.Dequeue();
 
-            if ((grid.IsValidLocation(current) && grid.PositionToBlock(current).GetMaterial() == this.GetMaterial()) 
-                    && (!toBeDestroyed.Contains(grid.PositionToBlock(current))))
+            if (!toBeDestroyed.Contains(current) && current.blockType == this.blockType)
             {
-                toBeDestroyed.Add(grid.PositionToBlock(current));
-                queue.Enqueue(new Vector3(current.x - 1, current.y));
-                queue.Enqueue(new Vector3(current.x + 1, current.y));
-                queue.Enqueue(new Vector3(current.x, current.y - 1));
-                queue.Enqueue(new Vector3(current.x, current.y + 1));
+                toBeDestroyed.Add(current);
+				var surroundingBlocks = grid.GetSurroundingBlocks(current, false);
+				foreach (var block in surroundingBlocks)
+					queue.Enqueue(block);
             }
         }
-        
+
         grid.DestroyBlocks(toBeDestroyed);
 	}
 }

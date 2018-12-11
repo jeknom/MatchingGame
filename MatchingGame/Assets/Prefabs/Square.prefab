@@ -109,7 +109,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   colours:
-  - {fileID: 2100000, guid: 176c38eef2aac5044b80537b12701acb, type: 2}
-  - {fileID: 2100000, guid: 22072e16e9863224f9204f8aef88220a, type: 2}
   - {fileID: 2100000, guid: f7d9ceb090dafd9488faae3363f5d6d8, type: 2}
+  - {fileID: 2100000, guid: 176c38eef2aac5044b80537b12701acb, type: 2}
   - {fileID: 2100000, guid: 0f3b4d39eb853414a8de1c47c38e66d1, type: 2}
+  - {fileID: 2100000, guid: 22072e16e9863224f9204f8aef88220a, type: 2}

@@ -32,56 +32,44 @@ public class GameGrid : MonoBehaviour
 
     public void Cascade()
     {
-        if (IsCascading())
-            foreach (var row in this.Blocks)
-                row.ForEach(b => b.GetObject().transform.position = Vector3.MoveTowards(b.GetObject().transform.position, PositionToVector(b), CascadeSpeed * Time.deltaTime));
+        foreach (var row in this.Blocks)
+            foreach (var block in row)
+            {
+                var destination = new Vector3(Blocks.IndexOf(row), row.IndexOf(block));
+                block.GetTransform = Vector3.MoveTowards(block.GetTransform, destination, CascadeSpeed * Time.deltaTime);
+            }
     }
 
     public void DestroyBlocks(List<IBlock> blocks)
     {
         foreach (var block in blocks)
-            this.Blocks.ForEach(b => { b.Remove(block); Destroy(block.GetObject()); });
+            this.Blocks.ForEach(b => { b.Remove(block); Destroy(block.GetObject); });
     }
 
-    public bool IsValidLocation(Vector3 position)
+    public List<IBlock> GetSurroundingBlocks(IBlock target, bool hexagonal)
     {
-        if ((position.x < Width && position.x >= 0) && (position.y < Height && position.y >= 0))
-            return true;
+        var targetX = this.Blocks.Where(b => b.Contains(target)).Select(b => this.Blocks.IndexOf(b)).SingleOrDefault();
+        var targetY = this.Blocks[targetX].IndexOf(target);
 
-        return false;
-    }
+        var positions = new List<Point>();
+        positions.Add(new Point { x = targetX + 1, y = targetY });
+        positions.Add(new Point { x = targetX - 1, y = targetY });
+        positions.Add(new Point { x = targetX, y = targetY + 1 });
+        positions.Add(new Point { x = targetX, y = targetY - 1 });
 
-    private bool IsCascading()
-    {
-        foreach (var row in this.Blocks)
+        if (hexagonal)
         {
-            if (row.Count < Height)
-                return true;
-
-            foreach (var block in row)
-            {
-                if (block.GetObject().transform.position != PositionToVector(block))
-                    return true;
-            }
+            positions.Add(new Point { x = targetX + 1, y = targetY +1 });
+            positions.Add(new Point { x = targetX - 1, y = targetY +1 });
+            positions.Add(new Point { x = targetX + 1, y = targetY - 1 });
+            positions.Add(new Point { x = targetX - 1, y = targetY - 1 });
         }
-        return false;
-    }
 
-    public Vector3 PositionToVector(IBlock block)
-    {
-        foreach (var row in this.Blocks)
-            if (row.Contains(block))
-                return new Vector3 (this.Blocks.IndexOf(row), row.IndexOf(block));
+        var surrounding = new List<IBlock>();
+        foreach (var position in positions)
+            if ((position.x >= 0 && position.x < Width) && (position.y >= 0 && position.y < Height))
+                surrounding.Add(this.Blocks[position.x][position.y]);
 
-        throw new InvalidOperationException("The block needs to be present on the grid.");
-    }
-
-    public IBlock PositionToBlock(Vector3 position)
-    {
-        foreach (var row in this.Blocks)
-            if (row.Contains(this.Blocks[(int)position.x][(int)position.y]))
-                return this.Blocks[(int)position.x][(int)position.y];
-
-        throw new InvalidOperationException("The grid does not contain a block that would match the Vector.");
+        return surrounding;
     }
 }

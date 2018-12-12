@@ -7,12 +7,12 @@ public class GameGrid : MonoBehaviour
 {
     private const int Width = 6;
     private const int Height = 11;
-    private const int BlackBombChance = 7;
     private const float CascadeSpeed = 10;
     private List<List<IBlock>> Columns = new List<List<IBlock>>();
     [SerializeField] private GameObject Square;
     [SerializeField] private GameObject BlackBomb;
     [SerializeField] private Vector3 SpawnPoint;
+    [SerializeField] private int BlackBombChance = 7;
 
     public GameGrid()
     {

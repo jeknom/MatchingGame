@@ -20,8 +20,10 @@ public class Square : MonoBehaviour, IBlock
 
 	public void Activate(GameGrid grid)
 	{
+		if (grid == null)
+			throw new InvalidGridException("Cannot activate block on a null grid object.");
+
         var toBeDestroyed = new List<IBlock>();
-        
 		var queue = new Queue<IBlock>();
         queue.Enqueue(this);
 
@@ -32,6 +34,7 @@ public class Square : MonoBehaviour, IBlock
             if (!toBeDestroyed.Contains(current) && current.blockType == this.blockType)
             {
                 toBeDestroyed.Add(current);
+				
 				var surroundingBlocks = grid.GetSurroundingBlocks(current, false);
 				foreach (var block in surroundingBlocks)
 					queue.Enqueue(block);

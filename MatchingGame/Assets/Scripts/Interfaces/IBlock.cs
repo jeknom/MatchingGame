@@ -13,5 +13,6 @@ public enum BlockType
 	red,
 	blue,
 	yellow,
-	green
+	green,
+	bomb
 }

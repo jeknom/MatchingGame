@@ -6,12 +6,11 @@ using UnityEngine;
 public class GameGrid : MonoBehaviour
 {
     private const int Width = 6;
-    private const int Height = 11;
-    private const float CascadeSpeed = 10;
+    private const int Height = 10;
+    private const float CascadeSpeed = 12.5f;
     private List<List<IBlock>> Columns = new List<List<IBlock>>();
     [SerializeField] private GameObject Square;
     [SerializeField] private GameObject BlackBomb;
-    [SerializeField] private Vector3 SpawnPoint;
     [SerializeField] private int BlackBombChance = 7;
 
     public GameGrid()
@@ -25,10 +24,18 @@ public class GameGrid : MonoBehaviour
         foreach (var column in this.Columns)
             while (column.Count < Height)
             {
-                var instantiatedBlock = Instantiate(RandomizeBlock().GetObject, this.SpawnPoint, Quaternion.identity);
+                var spawnPoint = new Vector3(Columns.IndexOf(column), 10, 0);
+                var instantiatedBlock = Instantiate(RandomizeBlock().GetObject, spawnPoint, Quaternion.identity);
                 instantiatedBlock.transform.parent = gameObject.transform;
                 column.Add(instantiatedBlock.GetComponent<IBlock>());
             }
+    }
+
+    private void OnDrawGizmos() 
+    {
+        for (var x = 0; x < Width; x++)
+            for (var y = 0; y < Height; y++)
+                Gizmos.DrawCube(new Vector3(x, y + 0.5f, 0), new Vector3(.5f, .5f, .5f));
     }
 
     public void Cascade()

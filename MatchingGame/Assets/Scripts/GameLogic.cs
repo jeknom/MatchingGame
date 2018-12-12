@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class GameLogic : MonoBehaviour
 {

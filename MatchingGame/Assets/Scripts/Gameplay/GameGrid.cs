@@ -12,6 +12,7 @@ public class GameGrid : MonoBehaviour
     [SerializeField] private GameObject Square;
     [SerializeField] private GameObject BlackBomb;
     [SerializeField] private int BlackBombChance = 7;
+    [SerializeField] private AudioClip DestroySound;
 
     public GameGrid()
     {
@@ -52,6 +53,8 @@ public class GameGrid : MonoBehaviour
     {
         foreach (var block in blocks)
             this.Columns.ForEach(b => { b.Remove(block); Destroy(block.GetObject); });
+
+        GetComponent<AudioSource>().PlayOneShot(DestroySound);
     }
 
     public List<IBlock> GetSurroundingBlocks(IBlock target, bool isHexagonal)

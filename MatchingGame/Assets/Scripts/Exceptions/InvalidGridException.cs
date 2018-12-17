@@ -1,10 +1,13 @@
 ﻿using System;
 
-public class InvalidGridException : Exception
+namespace MatchingGame
 {
-	public InvalidGridException(string operation)
-		: base(operation)
+	public class InvalidGridException : Exception
 	{
+		public InvalidGridException(string operation)
+			: base(operation)
+		{
 
+		}
 	}
 }

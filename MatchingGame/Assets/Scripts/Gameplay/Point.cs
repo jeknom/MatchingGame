@@ -1,5 +1,8 @@
-﻿public struct Point
+﻿namespace MatchingGame
 {
-	public int x;
-	public int y;
+	public struct Point
+	{
+		public int x;
+		public int y;
+	}
 }

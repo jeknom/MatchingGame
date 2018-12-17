@@ -1,10 +1,13 @@
 ﻿using System;
 
-public class InvalidBlockException : Exception
+namespace MatchingGame
 {
-	public InvalidBlockException(string operation)
-		: base(operation)
+	public class InvalidBlockException : Exception
 	{
+		public InvalidBlockException(string operation)
+			: base(operation)
+		{
 
+		}
 	}
 }

@@ -2,19 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Mouse : IPlayerControls
+namespace MatchingGame
 {
-	public GameObject GetInteraction()
+	public class Mouse : IPlayerControls
 	{
-		if (Input.GetMouseButtonDown(0))
+		public GameObject GetInteraction()
 		{
-			RaycastHit hit;
-			var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+			if (Input.GetMouseButtonDown(0))
+			{
+				RaycastHit hit;
+				var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-			if (Physics.Raycast(ray, out hit))
-				return hit.collider.gameObject;
+				if (Physics.Raycast(ray, out hit))
+					return hit.collider.gameObject;
+			}
+			
+			return null;
 		}
-		
-		return null;
 	}
 }

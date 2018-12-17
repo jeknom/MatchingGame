@@ -1,46 +1,49 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class Square : MonoBehaviour, IBlock
+namespace MatchingGame
 {
-	[SerializeField] private Material[] colours;
-	public GameObject GetObject { get { return gameObject; } }
-	public BlockType blockType { get; set; }
-	public Vector3 GetTransform
-	{ 
-		get { return gameObject.transform.position; }
-		set { gameObject.transform.position = value; } 
-	}
-
-	private void Start ()
+	public class Square : MonoBehaviour, IBlock
 	{
-		blockType = (BlockType)UnityEngine.Random.Range(0, 4);
-		GetComponent<MeshRenderer>().material = colours[(int)blockType];
-	}
+		[SerializeField] private Material[] colours;
+		public GameObject GetObject { get { return gameObject; } }
+		public BlockType blockType { get; set; }
+		public Vector3 GetTransform
+		{ 
+			get { return gameObject.transform.position; }
+			set { gameObject.transform.position = value; } 
+		}
 
-	public void Activate(GameGrid grid)
-	{
-		if (grid == null)
-			throw new InvalidGridException("Cannot activate block on a null grid object.");
+		private void Start ()
+		{
+			blockType = (BlockType)UnityEngine.Random.Range(0, 4);
+			GetComponent<MeshRenderer>().material = colours[(int)blockType];
+		}
 
-        var toBeDestroyed = new List<IBlock>();
-		var queue = new Queue<IBlock>();
-        queue.Enqueue(this);
+		public void Activate(GameGrid grid)
+		{
+			if (grid == null)
+				throw new InvalidGridException("Cannot activate block on a null grid object.");
 
-        while (queue.Count > 0)
-        {
-            var current = queue.Dequeue();
+			var toBeDestroyed = new List<IBlock>();
+			var queue = new Queue<IBlock>();
+			queue.Enqueue(this);
 
-            if (!toBeDestroyed.Contains(current) && current.blockType == this.blockType)
-            {
-                toBeDestroyed.Add(current);
-				
-				var surroundingBlocks = grid.GetSurroundingBlocks(current, false);
-				foreach (var block in surroundingBlocks)
-					queue.Enqueue(block);
-            }
-        }
+			while (queue.Count > 0)
+			{
+				var current = queue.Dequeue();
 
-        grid.DestroyBlocks(toBeDestroyed);
+				if (!toBeDestroyed.Contains(current) && current.blockType == this.blockType)
+				{
+					toBeDestroyed.Add(current);
+					
+					var surroundingBlocks = grid.GetSurroundingBlocks(current, false);
+					foreach (var block in surroundingBlocks)
+						queue.Enqueue(block);
+				}
+			}
+
+			grid.DestroyBlocks(toBeDestroyed);
+		}
 	}
 }

@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 
-public interface IPlayerControls
+namespace MatchingGame
 {
-	GameObject GetInteraction();
+	public interface IPlayerControls
+	{
+		GameObject GetInteraction();
+	}
 }

@@ -4,6 +4,6 @@ namespace MatchingGame
 {
 	public interface IPlayerControls
 	{
-		GameObject GetInteraction();
+		IBlock GetInteraction();
 	}
 }

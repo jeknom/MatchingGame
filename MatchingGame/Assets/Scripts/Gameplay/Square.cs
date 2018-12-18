@@ -1,23 +1,24 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace MatchingGame
 {
 	public class Square : MonoBehaviour, IBlock
 	{
-		[SerializeField] private Material[] colours;
+		[SerializeField] private Color32[] colours;
 		public GameObject GetObject { get { return gameObject; } }
 		public BlockType blockType { get; set; }
-		public Vector3 GetTransform
+		public Vector3 GetRectTransform
 		{ 
-			get { return gameObject.transform.position; }
-			set { gameObject.transform.position = value; } 
+			get { return gameObject.GetComponent<RectTransform>().position; }
+			set { gameObject.GetComponent<RectTransform>().position = value; }
 		}
 
 		private void Start ()
 		{
 			blockType = (BlockType)UnityEngine.Random.Range(0, 4);
-			GetComponent<MeshRenderer>().material = colours[(int)blockType];
+			GetComponent<Image>().color = colours[(int)blockType];
 		}
 
 		public void Activate(GameGrid grid)
@@ -43,7 +44,8 @@ namespace MatchingGame
 				}
 			}
 
-			grid.DestroyBlocks(toBeDestroyed);
+			if (toBeDestroyed.Count >= 2)
+				grid.DestroyBlocks(toBeDestroyed);
 		}
 	}
 }

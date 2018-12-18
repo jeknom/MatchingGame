@@ -6,7 +6,7 @@ namespace MatchingGame
 {
 	public class Mouse : IPlayerControls
 	{
-		public GameObject GetInteraction()
+		public IBlock GetInteraction()
 		{
 			if (Input.GetMouseButtonDown(0))
 			{
@@ -14,7 +14,7 @@ namespace MatchingGame
 				var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
 				if (Physics.Raycast(ray, out hit))
-					return hit.collider.gameObject;
+					return hit.collider.gameObject.GetComponent<IBlock>();
 			}
 			
 			return null;

@@ -8,7 +8,7 @@ namespace MatchingGame
     {
         private const int Width = 6;
         private const int Height = 10;
-        private const float CascadeSpeed = 12.5f;
+        private const float CascadeSpeed = 10f;
         private List<List<IBlock>> Columns = new List<List<IBlock>>();
         [SerializeField] private GameObject Square;
         [SerializeField] private GameObject BlackBomb;
@@ -26,18 +26,14 @@ namespace MatchingGame
             foreach (var column in this.Columns)
                 while (column.Count < Height)
                 {
+                    var instantiatedBlock = Instantiate(RandomizeBlock().GetObject);
+                    instantiatedBlock.GetComponent<RectTransform>().SetParent(this.transform, false);
+                    
                     var spawnPoint = new Vector3(Columns.IndexOf(column), 10, 0);
-                    var instantiatedBlock = Instantiate(RandomizeBlock().GetObject, spawnPoint, Quaternion.identity);
-                    instantiatedBlock.transform.parent = gameObject.transform;
+                    instantiatedBlock.GetComponent<RectTransform>().position = spawnPoint;
+                    
                     column.Add(instantiatedBlock.GetComponent<IBlock>());
                 }
-        }
-
-        private void OnDrawGizmos() 
-        {
-            for (var x = 0; x < Width; x++)
-                for (var y = 0; y < Height; y++)
-                    Gizmos.DrawCube(new Vector3(x, y + 0.5f, 0), new Vector3(.5f, .5f, .5f));
         }
 
         public void Cascade()
@@ -46,7 +42,7 @@ namespace MatchingGame
                 foreach (var block in column)
                 {
                     var destination = new Vector3(Columns.IndexOf(column), column.IndexOf(block));
-                    block.GetTransform = Vector3.MoveTowards(block.GetTransform, destination, CascadeSpeed * Time.deltaTime);
+                    block.GetRectTransform = Vector3.MoveTowards(block.GetRectTransform, destination, CascadeSpeed * Time.deltaTime);
                 }
         }
 

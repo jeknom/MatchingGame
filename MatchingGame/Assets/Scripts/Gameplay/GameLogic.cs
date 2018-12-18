@@ -13,10 +13,8 @@ namespace MatchingGame
 			try
 			{
 				if (controls.GetInteraction() != null)
-				controls.GetInteraction().GetComponent<IBlock>().Activate(grid);
-
+				controls.GetInteraction().Activate(grid);
 				grid.FillGrid();
-				
 				grid.Cascade();
 			}
 			catch (InvalidGridException gridException)

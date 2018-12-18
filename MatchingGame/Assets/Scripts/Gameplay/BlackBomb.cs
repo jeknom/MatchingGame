@@ -3,22 +3,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 namespace MatchingGame
 {
 	public class BlackBomb : MonoBehaviour, IBlock 
 	{
 		public GameObject GetObject { get { return gameObject; } }
 		public BlockType blockType { get; set; }
-		public Vector3 GetTransform
+		public Vector3 GetRectTransform
 		{ 
-			get { return gameObject.transform.position; }
-			set { gameObject.transform.position = value; } 
+			get { return gameObject.GetComponent<RectTransform>().position; }
+			set { gameObject.GetComponent<RectTransform>().position = value; }
 		}
 
 		private void Start ()
 		{
-			blockType = BlockType.bomb;
+			blockType = BlockType.Bomb;
 		}
 
 		public void Activate(GameGrid grid)
@@ -39,7 +38,7 @@ namespace MatchingGame
 					toBeDestroyed.Add(current);
 
 					var surroundingBlocks = grid.GetSurroundingBlocks(current, true);
-					var surroundingNonBombs = surroundingBlocks.Where(b => b.blockType != BlockType.bomb).ToList();
+					var surroundingNonBombs = surroundingBlocks.Where(b => b.blockType != BlockType.Bomb).ToList();
 					var surroundingBombs = surroundingBlocks.Where(b => b.blockType == this.blockType).ToList();
 
 					foreach (var nonBomb in surroundingNonBombs)

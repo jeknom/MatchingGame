@@ -5,7 +5,7 @@ namespace MatchingGame
 {
 	public class GameLogic : MonoBehaviour
 	{
-		[SerializeField] private GameGrid grid;
+		private GameGrid grid = new GameGrid();
 		private IPlayerControls controls = new Mouse();
 
 		private void Update() 
@@ -13,9 +13,9 @@ namespace MatchingGame
 			try
 			{
 				if (controls.GetInteraction() != null)
-				controls.GetInteraction().Activate(grid);
-				grid.FillGrid();
-				grid.Cascade();
+					controls.GetInteraction().Activate(grid);
+				
+				GridOperations.FillGrid(grid);
 			}
 			catch (InvalidGridException gridException)
 			{

@@ -5,7 +5,6 @@ namespace MatchingGame
 {
 	public class GameLogic : MonoBehaviour
 	{
-		private GameGrid grid = new GameGrid();
 		private IPlayerControls controls = new Mouse();
 
 		private void Update() 
@@ -13,9 +12,9 @@ namespace MatchingGame
 			try
 			{
 				if (controls.GetInteraction() != null)
-					controls.GetInteraction().Activate(grid);
+					Destroy(controls.GetInteraction());
 				
-				GridOperations.FillGrid(grid);
+				GridOperations.FillGrid();
 			}
 			catch (InvalidGridException gridException)
 			{

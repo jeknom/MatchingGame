@@ -7,16 +7,13 @@ namespace MatchingGame
 	{
 		public BlockType blockType { get; set; }
 
-		private void Start ()
+		public BlackBomb()
 		{
 			blockType = BlockType.Bomb;
 		}
 
-		public void Activate(GameGrid grid)
+		public void Activate()
 		{
-			if (grid == null)
-				throw new InvalidGridException("Cannot activate block on a null grid object.");
-
 			var toBeDestroyed = new List<IBlock>();
 			var queue = new Queue<IBlock>();
 			queue.Enqueue(this);
@@ -29,7 +26,7 @@ namespace MatchingGame
 				{
 					toBeDestroyed.Add(current);
 
-					var surroundingBlocks = GridQuery.GetSurroundingBlocks(grid, current, true);
+					var surroundingBlocks = GridQuery.GetSurroundingBlocks(current, true);
 					var surroundingNonBombs = surroundingBlocks.Where(b => b.blockType != BlockType.Bomb).ToList();
 					var surroundingBombs = surroundingBlocks.Where(b => b.blockType == this.blockType).ToList();
 
@@ -42,7 +39,7 @@ namespace MatchingGame
 				}
 			}
 
-			BlockOperations.RemoveBlocks(grid, toBeDestroyed);
+			BlockOperations.RemoveBlocks(toBeDestroyed);
 		}
 	}	
 }

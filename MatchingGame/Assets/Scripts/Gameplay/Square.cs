@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using UnityEngine;
+using System.Collections.Generic;
 
 namespace MatchingGame
 {
@@ -6,11 +7,13 @@ namespace MatchingGame
 	{
 		public BlockType blockType { get; set; }
 
-		public void Activate(GameGrid grid)
+		public Square()
 		{
-			if (grid == null)
-				throw new InvalidGridException("Cannot activate block on a null grid object.");
+			blockType = BlockType.Square;
+		}
 
+		public void Activate()
+		{
 			var toBeDestroyed = new List<IBlock>();
 			var queue = new Queue<IBlock>();
 			queue.Enqueue(this);
@@ -23,14 +26,14 @@ namespace MatchingGame
 				{
 					toBeDestroyed.Add(current);
 					
-					var surroundingBlocks = GridQuery.GetSurroundingBlocks(grid, current, false);
+					var surroundingBlocks = GridQuery.GetSurroundingBlocks(current, false);
 					foreach (var block in surroundingBlocks)
 						queue.Enqueue(block);
 				}
 			}
 
 			if (toBeDestroyed.Count >= 2)
-				BlockOperations.RemoveBlocks(grid, toBeDestroyed);
+				BlockOperations.RemoveBlocks(toBeDestroyed);
 		}
 	}
 }

@@ -5,15 +5,12 @@ namespace MatchingGame
 	public interface IBlock
 	{
 		BlockType blockType { get; set; }
-		void Activate(GameGrid grid);
+		void Activate();
 	}
 
 	public enum BlockType
 	{
-		Red,
-		Blue,
-		Yellow,
-		Green,
+		Square,
 		Bomb
 	}
 }

@@ -1,11 +1,13 @@
+using UnityEngine;
+
 namespace MatchingGame
 {
     public static class GridOperations
     {
-        public static void FillGrid(GameGrid grid)
+        public static void FillGrid()
         {
-            foreach (var column in grid.Columns)
-                while (column.Count < grid.Height)
+            foreach (var column in GameGrid.Columns)
+                while (column.Count < GameGrid.Height)
                     column.Add(BlockOperations.RandomizeBlock());
         }
     }

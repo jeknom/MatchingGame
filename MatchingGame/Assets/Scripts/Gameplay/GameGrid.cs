@@ -1,23 +1,21 @@
-using System.Linq;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace MatchingGame
 {
-    public class GameGrid : MonoBehaviour
+    public static class GameGrid
     {
-        private List<List<IBlock>> columns = new List<List<IBlock>>();
-        [SerializeField] private int width = 6;
-        [SerializeField] private int height = 10;
+        private const int width = 6;
+        private const int height = 10;
+        private static List<List<IBlock>> columns = new List<List<IBlock>>();
 
-        public List<List<IBlock>> Columns { get { return this.columns; } set {this.columns = value; } }
-        public int Width { get { return width; } }
-        public int Height { get { return height; } }
+        public static int Width { get { return width; } }
+        public static int Height { get { return height; } }
+        public static List<List<IBlock>> Columns { get { return columns; } set { columns = value; } }
 
-        public GameGrid()
+        static GameGrid()
         {
-            for (var x = 0; x < this.width; x++)
-                this.columns.Add(new List<IBlock>());
+            for (var x = 0; x < width; x++)
+                columns.Add(new List<IBlock>());
         }
     }
 }

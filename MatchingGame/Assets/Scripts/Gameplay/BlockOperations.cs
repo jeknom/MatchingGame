@@ -20,10 +20,10 @@ namespace MatchingGame
             return blocks[Random.Range(0, blocks.Count)];
         }
 
-        public static void RemoveBlocks(GameGrid grid, List<IBlock> blocks)
+        public static void RemoveBlocks(List<IBlock> blocks)
         {
             foreach (var block in blocks)
-                grid.Columns.ForEach(b => { b.Remove(block); });
+                GameGrid.Columns.ForEach(b => { b.Remove(block); });
         }
     }
 }

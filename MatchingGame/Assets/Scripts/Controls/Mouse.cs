@@ -16,7 +16,6 @@ namespace MatchingGame
 				if (Physics.Raycast(ray, out hit))
 				{
 					var interaction = hit.collider.gameObject;
-					Debug.Log(interaction);
 					return interaction;
 				}
 			}

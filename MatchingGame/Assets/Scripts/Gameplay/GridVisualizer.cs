@@ -19,63 +19,63 @@ namespace MatchingGame
 
         private void Update() 
         {
-            if (!IsSynced() && IsCascaded())
-                SynchronizeColumns();
             Cascade();
+            AddMissing();
+            RemoveNonexisting();
         }
 
         private void Cascade()
         {
             foreach (var column in objectColumns)
-            {
-                for (var y = 0; y < column.Count; y++)
+                foreach (var blockObject in column)
                 {
-                    var destination = new Vector3(objectColumns.IndexOf(column), y);
-                    column[y].transform.position = Vector3.MoveTowards(column[y].transform.position, destination, cascadeSpeed);
+                    var destination = new Vector3(objectColumns.IndexOf(column), column.IndexOf(blockObject));
+                    Vector3.MoveTowards(blockObject.transform.position, destination, cascadeSpeed);
+                }
+        }
+
+        private void AddMissing()
+        {
+            foreach (var column in GameGrid.Columns)
+            {
+                var currentCount = objectColumns[GameGrid.Columns.IndexOf(column)].Count;
+                for (var y = currentCount; y < column.Count; y++)
+                {
+                    // Instantiate by index
+                    objectColumns[currentCount].Add(Instantiate(ToBlockType(GameGrid.Columns[currentCount][y])));
                 }
             }
         }
 
-        private void SynchronizeColumns()
+        private void RemoveNonexisting()
         {
-            foreach (var column in objectColumns)
-                column.Clear();
-
-            for (var x = 0; x < GameGrid.Width; x++)
-                foreach (var block in GameGrid.Columns[x])
+            foreach (var column in GameGrid.Columns)
+                foreach (var block in column)
                 {
-                    var convertedBlock = Instantiate(GetBlockType(block));
-                    convertedBlock.GetComponent<RectTransform>().SetParent(parentTransform, false);
-                    convertedBlock.GetComponent<RectTransform>().position = new Vector3(x, GameGrid.Columns[x].Count, -1);
-                    objectColumns[x].Add(convertedBlock);
+                    var index = new Point{ x = GameGrid.Columns.IndexOf(column), y = column.IndexOf(block)};
+                    if (GameGrid.Columns[index.x][index.y].blockType != ToBlockType(objectColumns[index.x][index.y]))
+                    {
+                        var current = objectColumns[index.x][index.y];
+                        objectColumns[index.x].Remove(current);
+                        Destroy(current);
+                    }
                 }
         }
 
-        private GameObject GetBlockType(IBlock block)
+        private BlockType ToBlockType(GameObject block)
+        {
+            if (block.tag == "BlackBomb")
+                return BlockType.Bomb;
+            else
+                return BlockType.Square;
+        }
+
+        private GameObject ToBlockType(IBlock block)
         {
             if (block.blockType == BlockType.Bomb)
                 return blackBomb;
             else
                 return square;
-        }
-
-        private bool IsSynced()
-        {
-            for (var i = 0; i < GameGrid.Width; i++)
-                if (objectColumns[i].Count != GameGrid.Columns[i].Count)
-                    return false;
-
-            return true;
-        }
-
-        private bool IsCascaded()
-        {
-            foreach (var column in objectColumns)
-                foreach (var blockObject in column)
-                    if (blockObject.GetComponent<RectTransform>().position != new Vector3(objectColumns.IndexOf(column), column.IndexOf(blockObject)))
-                        return false;
-
-            return true;
         }
     }
 }

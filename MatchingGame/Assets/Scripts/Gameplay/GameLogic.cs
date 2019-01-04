@@ -11,10 +11,10 @@ namespace MatchingGame
 		{
 			try
 			{
+				GridOperations.FillGrid();
+				
 				if (controls.GetInteraction() != null)
 					Destroy(controls.GetInteraction());
-				
-				GridOperations.FillGrid();
 			}
 			catch (InvalidGridException gridException)
 			{

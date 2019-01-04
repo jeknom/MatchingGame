@@ -21,7 +21,7 @@ namespace MatchingGame
         {
             Cascade();
             AddMissing();
-            RemoveNonexisting();
+            //RemoveNonexisting();
         }
 
         private void Cascade()
@@ -29,22 +29,26 @@ namespace MatchingGame
             foreach (var column in objectColumns)
                 foreach (var blockObject in column)
                 {
-                    var destination = new Vector3(objectColumns.IndexOf(column), column.IndexOf(blockObject));
-                    Vector3.MoveTowards(blockObject.transform.position, destination, cascadeSpeed);
+                    var index = new Point{ x = objectColumns.IndexOf(column), y = column.IndexOf(blockObject)};
+                    var destination = new Vector3(index.x, index.y);
+                    objectColumns[index.x][index.y].GetComponent<RectTransform>().position = Vector3.MoveTowards(blockObject.transform.position, destination, cascadeSpeed);
                 }
         }
 
         private void AddMissing()
         {
             foreach (var column in GameGrid.Columns)
-            {
-                var currentCount = objectColumns[GameGrid.Columns.IndexOf(column)].Count;
-                for (var y = currentCount; y < column.Count; y++)
+                foreach (var block in column)
                 {
-                    // Instantiate by index
-                    objectColumns[currentCount].Add(Instantiate(ToBlockType(GameGrid.Columns[currentCount][y])));
+                    var index = new Point{ x = GameGrid.Columns.IndexOf(column), y = column.IndexOf(block)};
+                    
+                    if (objectColumns[index.x].Count < GameGrid.Columns[index.x].Count)
+                    {
+                        var instantiatedObject = Instantiate(ToBlockType(GameGrid.Columns[index.x][index.y]));
+                        instantiatedObject.GetComponent<RectTransform>().SetParent(parentTransform, false);
+                        objectColumns[index.x].Add(instantiatedObject);
+                    }
                 }
-            }
         }
 
         private void RemoveNonexisting()

@@ -12,14 +12,12 @@ namespace MatchingGame.Controls
 			{
 				RaycastHit hit;
 				var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
 				if (Physics.Raycast(ray, out hit))
 				{
 					var interaction = hit.collider.gameObject;
 					return interaction;
 				}
 			}
-			
 			return null;
 		}
 	}

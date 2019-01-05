@@ -23,8 +23,17 @@ namespace MatchingGame
 			try
 			{
 				GridOperations.FillGrid(grid);
+				if (controls.GetInteraction() != null)
+				{
+					var interactionIndex = GridVisualizer.VisualBlockToPoint(gridVisualizer, controls.GetInteraction());
+					grid.Columns[interactionIndex.x][interactionIndex.y].Activate(grid);
+				}
 				gridVisualizer.Sync(grid);
 				gridVisualizer.Cascade();
+			}
+			catch (InvalidVisualException visualException)
+			{
+				Debug.Log("An unexpected error has occurred with the visuals. " + visualException);
 			}
 			catch (InvalidGridException gridException)
 			{

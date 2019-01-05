@@ -1,16 +1,19 @@
 namespace MatchingGame.Visualization
 {
     using UnityEngine;
+    using System.Linq;
     using System.Collections.Generic;
     using MatchingGame.Logic;
 
     public class GridVisualizer : MonoBehaviour
     {
-        public static List<List<GameObject>> visualColumns = new List<List<GameObject>>();
+        private static List<List<GameObject>> visualColumns = new List<List<GameObject>>();
         [SerializeField] private RectTransform parentTransform;
         [SerializeField] private GameObject square;
         [SerializeField] private GameObject blackBomb;
         [SerializeField] private float cascadeSpeed = 10;
+
+        public List<List<GameObject>> VisualColumns { get { return visualColumns; } }
 
         public void Build(GameGrid grid)
         {
@@ -26,6 +29,19 @@ namespace MatchingGame.Visualization
                     var index = new Point { x = grid.Columns.IndexOf(column), y = column.IndexOf(block) };
                     GameObject visualBlock;
 
+                    // Destroys non-existing visual blocks.
+                    if (visualColumns[index.x].Count > grid.Columns[index.x].Count)
+                    {
+                        visualBlock = visualColumns[index.x][index.y];
+                        var blockType = GridQuery.PointToBlockType(grid, index);
+                        var visualBlockType = VisualToBlockType(visualBlock);
+                        if (blockType != visualBlockType)
+                        {
+                            visualColumns[index.x].Remove(visualBlock);
+                            Destroy(visualBlock);
+                        }
+                    }
+
                     // Checks for missing visual blocks and adds them.
                     if (visualColumns[index.x].Count < grid.Columns[index.x].Count)
                     {
@@ -38,16 +54,6 @@ namespace MatchingGame.Visualization
                         visualBlock.GetComponent<RectTransform>().SetParent(parentTransform, false);
                         visualBlock.GetComponent<RectTransform>().position = startPosition;
                         visualColumns[index.x].Add(visualBlock);
-                    }
-
-                    // Destroys non-existing visual blocks.
-                    visualBlock = visualColumns[index.x][index.y];
-                    var blockType = GridQuery.PointToBlockType(grid, index);
-                    var visualBlockType = VisualToBlockType(visualBlock);
-                    if (blockType != visualBlockType)
-                    {
-                        visualColumns[index.x].RemoveAt(index.y);
-                        Destroy(visualBlock);
                     }
                 }
         }
@@ -90,10 +96,35 @@ namespace MatchingGame.Visualization
 
         private BlockType VisualToBlockType(GameObject visualBlock)
         {
+            if (visualBlock == null)
+                throw new InvalidVisualException("Cannot turn null into a BlockType");
+
             if (visualBlock.tag == "BlackBomb")
                 return BlockType.Bomb;
             else
                 return BlockType.Square;
+        }
+
+        public static Point VisualBlockToPoint(GridVisualizer grid, GameObject visualBlock)
+        {
+            if (visualBlock == null)
+                throw new InvalidVisualException("Cannot turn null into a point");
+
+            if (grid.VisualColumns.Where(b => b.Contains(visualBlock)).SingleOrDefault() == null)
+                throw new InvalidVisualException("Cannot turn block into a point because it isn't present on the VisualGrid");
+
+            Point point;
+            foreach (var column in grid.VisualColumns)
+                foreach (var block in column)
+                {
+                    point.x = grid.VisualColumns.IndexOf(column);
+                    if (column.Contains(visualBlock))
+                    {
+                        point.y = column.IndexOf(block);
+                        return point;
+                    }
+                }
+            throw new InvalidVisualException("An unexpected error has occurred, the block could not be turned into a point");
         }
     }
 }

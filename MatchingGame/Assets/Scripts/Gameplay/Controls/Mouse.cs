@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MatchingGame
+namespace MatchingGame.Controls
 {
 	public class Mouse : IPlayerControls
 	{

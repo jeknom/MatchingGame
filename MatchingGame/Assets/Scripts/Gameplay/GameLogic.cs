@@ -1,20 +1,30 @@
 ﻿using System;
 using UnityEngine;
+using MatchingGame.Logic;
+using MatchingGame.Visualization;
+using MatchingGame.Controls;
 
 namespace MatchingGame
 {
 	public class GameLogic : MonoBehaviour
 	{
 		private IPlayerControls controls = new Mouse();
+		private GameGrid grid = new GameGrid();
+		private GridVisualizer gridVisualizer;
+
+		private void Start() 
+		{
+			gridVisualizer = GetComponent<GridVisualizer>();
+			gridVisualizer.Build(grid);
+		}
 
 		private void Update() 
 		{
 			try
 			{
-				GridOperations.FillGrid();
-				
-				if (controls.GetInteraction() != null)
-					Destroy(controls.GetInteraction());
+				GridOperations.FillGrid(grid);
+				gridVisualizer.Sync(grid);
+				gridVisualizer.Cascade();
 			}
 			catch (InvalidGridException gridException)
 			{

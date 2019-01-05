@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 
-namespace MatchingGame
+namespace MatchingGame.Logic
 {
 	public class BlackBomb : IBlock 
 	{
@@ -12,7 +12,7 @@ namespace MatchingGame
 			blockType = BlockType.Bomb;
 		}
 
-		public void Activate()
+		public void Activate(GameGrid grid)
 		{
 			var toBeDestroyed = new List<IBlock>();
 			var queue = new Queue<IBlock>();
@@ -26,7 +26,7 @@ namespace MatchingGame
 				{
 					toBeDestroyed.Add(current);
 
-					var surroundingBlocks = GridQuery.GetSurroundingBlocks(current, true);
+					var surroundingBlocks = GridQuery.GetSurroundingBlocks(grid, current, true);
 					var surroundingNonBombs = surroundingBlocks.Where(b => b.blockType != BlockType.Bomb).ToList();
 					var surroundingBombs = surroundingBlocks.Where(b => b.blockType == this.blockType).ToList();
 
@@ -39,7 +39,7 @@ namespace MatchingGame
 				}
 			}
 
-			BlockOperations.RemoveBlocks(toBeDestroyed);
+			BlockOperations.RemoveBlocks(grid, toBeDestroyed);
 		}
 	}	
 }

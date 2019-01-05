@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-namespace MatchingGame
+namespace MatchingGame.Logic
 {
 	public class Square : IBlock
 	{
@@ -12,7 +12,7 @@ namespace MatchingGame
 			blockType = BlockType.Square;
 		}
 
-		public void Activate()
+		public void Activate(GameGrid grid)
 		{
 			var toBeDestroyed = new List<IBlock>();
 			var queue = new Queue<IBlock>();
@@ -26,14 +26,14 @@ namespace MatchingGame
 				{
 					toBeDestroyed.Add(current);
 					
-					var surroundingBlocks = GridQuery.GetSurroundingBlocks(current, false);
+					var surroundingBlocks = GridQuery.GetSurroundingBlocks(grid, current, false);
 					foreach (var block in surroundingBlocks)
 						queue.Enqueue(block);
 				}
 			}
 
 			if (toBeDestroyed.Count >= 2)
-				BlockOperations.RemoveBlocks(toBeDestroyed);
+				BlockOperations.RemoveBlocks(grid, toBeDestroyed);
 		}
 	}
 }

@@ -319,10 +319,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2689c13b5f7aa34f8dfd77e60ffd2c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parentTransform: {fileID: 1795124462}
   square: {fileID: 1036430746746016, guid: 2cdfda9493bbf1f459468b203aadbaea, type: 3}
   blackBomb: {fileID: 1453262822159956, guid: a36e4a38ee57140999a82b3ab195aca2, type: 3}
-  parentTransform: {fileID: 1795124462}
-  cascadeSpeed: 0.1
+  cascadeSpeed: 10
 --- !u!1 &1557774293
 GameObject:
   m_ObjectHideFlags: 0

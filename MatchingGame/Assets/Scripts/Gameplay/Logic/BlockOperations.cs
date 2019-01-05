@@ -1,4 +1,4 @@
-namespace MatchingGame
+namespace MatchingGame.Logic
 {
     using UnityEngine;
     using System.Collections.Generic;
@@ -20,10 +20,10 @@ namespace MatchingGame
             return blocks[Random.Range(0, blocks.Count)];
         }
 
-        public static void RemoveBlocks(List<IBlock> blocks)
+        public static void RemoveBlocks(GameGrid grid, List<IBlock> blocks)
         {
             foreach (var block in blocks)
-                GameGrid.Columns.ForEach(b => { b.Remove(block); });
+                grid.Columns.ForEach(b => { b.Remove(block); });
         }
     }
 }

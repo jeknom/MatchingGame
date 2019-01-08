@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 
 namespace MatchingGame
@@ -12,7 +13,7 @@ namespace MatchingGame
 
         public void Unload(CellGrid cellGrid, VisualGrid visualGrid)
         {
-            visualGrid.DestroyCellAt(position);
+            visualGrid.UnremovedBlocks.Add(position);
         }
     }
 }

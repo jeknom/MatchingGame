@@ -25,7 +25,7 @@ namespace MatchingGame
 
             var surrounding = new List<Point>();
             foreach (var position in positions)
-                if ((position.x >= 0 && position.y < grid.Width) && (position.y >= 0 && position.y < grid.Height))
+                if ((position.x >= 0 && position.x < grid.Width) && (position.y >= 0 && position.y < grid.Height))
                     surrounding.Add(position);
 
             return surrounding;

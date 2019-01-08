@@ -15,28 +15,27 @@ namespace MatchingGame
 
         public void Activate(CellGrid grid)
         {
-            var queue = new Queue<Point>();
-            var positions = new List<Point>();
-
             var cellPoint = GridQuery.ToPoint(grid, this);
-            // var cell = grid.Columns[cellPoint.x][cellPoint.y];
-            // queue.Enqueue(cellPoint);
+            var cell = grid.Columns[cellPoint.x][cellPoint.y];
+            var queue = new Queue<Point>();
+            queue.Enqueue(cellPoint);
 
-            // while (queue.Count > 0)
-            // {
-            //     var position = queue.Dequeue();
-            //     var currentCell = grid.Columns[position.x][position.y];
-
-            //     if (!positions.Contains(position) && currentCell.Type == cell.Type)
-            //     {
-            //         positions.Add(position);
+            var positions = new List<Point>();
+            while (queue.Count > 0)
+            {
+                var position = queue.Dequeue();
+                var currentCell = grid.Columns[position.x][position.y];
+                
+                if (!positions.Contains(position) && currentCell.Type == cell.Type)
+                {
+                    positions.Add(position);
                     
-            //         var surroundingPositions = GridQuery.GetSurrounding(grid, position, false);
-            //         foreach (var point in surroundingPositions)
-            //             queue.Enqueue(point);
-            //     }
-            // }
-            positions.Add(cellPoint);
+                    var surroundingPositions = GridQuery.GetSurrounding(grid, position, false);
+                    foreach (var point in surroundingPositions)
+                        if (!queue.Contains(point))
+                            queue.Enqueue(point);
+                }
+            }
 
             GridOperations.RemoveCells(grid, positions);
         }

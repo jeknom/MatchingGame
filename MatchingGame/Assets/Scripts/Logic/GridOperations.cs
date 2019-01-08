@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections.Generic;
 
 namespace MatchingGame
@@ -29,6 +30,8 @@ namespace MatchingGame
             if (grid.Events.Count > 0)
                 throw new InvalidGridException("Cannot remove cells from grid when the event queue is not empty.");
 
+            var cells = new List<ICell>();
+
             foreach (var point in positions)
             {
                 if ((grid.Columns.Count < point.x && point.x < 0) && (grid.Columns[point.x].Count < point.y && point.x < 0))
@@ -36,7 +39,22 @@ namespace MatchingGame
                 
                 var cell = grid.Columns[point.x][point.y];
                 grid.Events.Enqueue(new RemoveEvent { Position = point });
-                grid.Columns[point.x].RemoveAt(point.y);
+                cells.Add(grid.Columns[point.x][point.y]);
+            }
+
+            foreach (var cell in cells)
+            {
+                var columnQuery =   
+                    from column in grid.Columns
+                    where column.Contains(cell)
+                    select column;
+
+                var containingColumn = columnQuery.SingleOrDefault();
+
+                if (containingColumn == null)
+                    throw new InvalidGridException("The cell does not exist within the grid.");
+                else
+                    containingColumn.Remove(cell);
             }
         }
     }

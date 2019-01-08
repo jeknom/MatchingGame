@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,8 +13,9 @@ namespace MatchingGame
         [SerializeField] private GameObject basicBlock;
         [SerializeField] private GameObject bombBlock;
         private List<List<GameObject>> visualColumns = new List<List<GameObject>>();
+        private List<Point> unremovedBlocks = new List<Point>();
 
-        public int MyProperty { get; set; }
+        public List<Point> UnremovedBlocks { get { return unremovedBlocks; } set { unremovedBlocks = value; } }
         
         public List<List<GameObject>> VisualColumns
         { 
@@ -37,6 +39,9 @@ namespace MatchingGame
                 var latestEvent = grid.Events.Dequeue();
                 latestEvent.Unload(grid, this);
             }
+
+            DestroyCellsAt(UnremovedBlocks);
+            UnremovedBlocks.Clear();
         }
 
         public void Cascade()
@@ -69,10 +74,32 @@ namespace MatchingGame
             visualColumns[index].Add(block);
         }
 
-        public void DestroyCellAt(Point point)
+        public void DestroyCellsAt(List<Point> points)
         {
-            Destroy(visualColumns[point.x][point.y]);
-            visualColumns[point.x].RemoveAt(point.y);
+            var blocks = new List<GameObject>();
+            foreach (var point in points)
+                blocks.Add(visualColumns[point.x][point.y]);
+
+            foreach (var block in blocks)
+            {
+                var columnQuery =   
+                    from column in visualColumns
+                    where column.Contains(block)
+                    select column;
+
+                var containingColumn = columnQuery.SingleOrDefault();
+
+                if (containingColumn == null)
+                    throw new InvalidGridException("The block does not exist within the grid.");
+                else
+                {
+                    var columnX = visualColumns.IndexOf(containingColumn);
+                    var columnY = containingColumn.IndexOf(block);
+                    
+                    Destroy(visualColumns[columnX][columnY]);
+                    visualColumns[columnX].Remove(block);
+                }
+            }
         }
 
         private GameObject ToBlock(BlockType blockType)

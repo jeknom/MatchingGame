@@ -12,6 +12,8 @@ namespace MatchingGame
         [SerializeField] private GameObject basicBlock;
         [SerializeField] private GameObject bombBlock;
         private List<List<GameObject>> visualColumns = new List<List<GameObject>>();
+
+        public int MyProperty { get; set; }
         
         public List<List<GameObject>> VisualColumns
         { 
@@ -32,28 +34,8 @@ namespace MatchingGame
 
             while (grid.Events.Count > 0)
             {
-                var currentEvent = grid.Events.Dequeue();
-                var point = currentEvent.Position;
-
-                if (currentEvent.Event == EventType.Add)
-                {
-                    var blockType = currentEvent.Block;
-                    var block = ToBlock(blockType);
-                    block = Instantiate(block);
-
-                    var blockTransform = block.GetComponent<RectTransform>();
-                    var startPosition = new Vector3(point.x, grid.Height);
-                    blockTransform.SetParent(parentTransform, false);
-                    blockTransform.position = startPosition;
-                    visualColumns[point.x].Add(block);
-                }
-                else if (currentEvent.Event == EventType.Remove)
-                {
-                    Destroy(visualColumns[point.x][point.y]);
-                    visualColumns[point.x].RemoveAt(point.y);
-                }
-                else
-                    throw new InvalidEventException("An unexpected error has occurred.");
+                var latestEvent = grid.Events.Dequeue();
+                latestEvent.Unload(grid, this);
             }
         }
 
@@ -75,19 +57,22 @@ namespace MatchingGame
                 }
         }
 
-        public Point ToPoint(GameObject block)
+        public void InstantiateCellAt(BlockType blockType, int index)
         {
-            foreach (var column in visualColumns)
-                if (column.Contains(block))
-                {
-                    var pointX = visualColumns.IndexOf(column);
-                    var pointY = column.IndexOf(block);
-                    var point = new Point { x = pointX, y = pointY};
+            var block = ToBlock(blockType);
+            block = Instantiate(block);
 
-                    return point;
-                }
+            var blockTransform = block.GetComponent<RectTransform>();
+            var startPosition = new Vector3(index, visualColumns[index].Count);
+            blockTransform.SetParent(parentTransform, false);
+            blockTransform.position = startPosition;
+            visualColumns[index].Add(block);
+        }
 
-            throw new InvalidVisualException("The GameObject needs to exist on the visual matrix.");
+        public void DestroyCellAt(Point point)
+        {
+            Destroy(visualColumns[point.x][point.y]);
+            visualColumns[point.x].RemoveAt(point.y);
         }
 
         private GameObject ToBlock(BlockType blockType)

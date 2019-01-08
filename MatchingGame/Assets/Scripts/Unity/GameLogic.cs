@@ -24,7 +24,7 @@ namespace MatchingGame
                 if (controls.GetInteraction() != null && cellGrid.Events.Count == 0)
                 {
                     var block = controls.GetInteraction();
-                    var point = visualGrid.ToPoint(block);
+                    var point = GridQuery.ToPoint(visualGrid, block);
                     cellGrid.Columns[point.x][point.y].Activate(cellGrid);
                 }
                 else if (cellGrid.Events.Count == 0)

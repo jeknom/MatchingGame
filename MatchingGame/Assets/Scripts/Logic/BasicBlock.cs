@@ -18,24 +18,25 @@ namespace MatchingGame
             var queue = new Queue<Point>();
             var positions = new List<Point>();
 
-            var cellPoint = GridOperations.ToPoint(grid, this);
-            var cell = grid.Columns[cellPoint.x][cellPoint.y];
-            queue.Enqueue(cellPoint);
+            var cellPoint = GridQuery.ToPoint(grid, this);
+            // var cell = grid.Columns[cellPoint.x][cellPoint.y];
+            // queue.Enqueue(cellPoint);
 
-            while (queue.Count > 0)
-            {
-                var position = queue.Dequeue();
-                var currentCell = grid.Columns[position.x][position.y];
+            // while (queue.Count > 0)
+            // {
+            //     var position = queue.Dequeue();
+            //     var currentCell = grid.Columns[position.x][position.y];
 
-                if (!positions.Contains(position) && currentCell.Type == cell.Type)
-                {
-                    positions.Add(position);
+            //     if (!positions.Contains(position) && currentCell.Type == cell.Type)
+            //     {
+            //         positions.Add(position);
                     
-                    var surroundingPositions = GridQuery.GetSurrounding(grid, position, false);
-                    foreach (var point in surroundingPositions)
-                        queue.Enqueue(point);
-                }
-            }
+            //         var surroundingPositions = GridQuery.GetSurrounding(grid, position, false);
+            //         foreach (var point in surroundingPositions)
+            //             queue.Enqueue(point);
+            //     }
+            // }
+            positions.Add(cellPoint);
 
             GridOperations.RemoveCells(grid, positions);
         }

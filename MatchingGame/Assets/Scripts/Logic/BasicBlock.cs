@@ -1,4 +1,4 @@
-using System;
+using UnityEngine;
 using System.Collections.Generic;
 
 namespace MatchingGame
@@ -9,8 +9,7 @@ namespace MatchingGame
 
         public BasicBlock()
         {
-            var random = new Random();
-            Type = (BlockType)random.Next(0, 3);
+            Type = (BlockType)Random.Range(0, 3);
         }
 
         public void Activate(CellGrid grid)

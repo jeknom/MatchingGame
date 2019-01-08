@@ -62,13 +62,13 @@ namespace MatchingGame
                 }
         }
 
-        public void InstantiateCellAt(BlockType blockType, int index)
+        public void InstantiateCellAt(CellGrid grid, BlockType blockType, int index)
         {
             var block = ToBlock(blockType);
             block = Instantiate(block);
 
             var blockTransform = block.GetComponent<RectTransform>();
-            var startPosition = new Vector3(index, visualColumns[index].Count);
+            var startPosition = new Vector3(index, grid.Height, visualColumns[index].Count);
             blockTransform.SetParent(parentTransform, false);
             blockTransform.position = startPosition;
             visualColumns[index].Add(block);

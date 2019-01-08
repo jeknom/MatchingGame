@@ -13,7 +13,7 @@ namespace MatchingGame
         public void Unload(CellGrid cellGrid, VisualGrid visualGrid)
         {
             blockType = cellGrid.Columns[position.x][position.y].Type;
-            visualGrid.InstantiateCellAt(blockType, position.x);
+            visualGrid.InstantiateCellAt(cellGrid, blockType, position.x);
         }
     }
 }

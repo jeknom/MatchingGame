@@ -1,3 +1,4 @@
+using UnityEngine;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -13,7 +14,7 @@ namespace MatchingGame
             foreach (var column in grid.Columns)
                 while (column.Count < grid.Height)
                 {
-                    var cell = new BasicBlock();
+                    var cell = RandomizeCell();
                     column.Add(cell);
 
                     var point = new Point();
@@ -56,6 +57,17 @@ namespace MatchingGame
                 else
                     containingColumn.Remove(cell);
             }
+        }
+
+        private static ICell RandomizeCell()
+        {
+            var value = Random.Range(1, 100);
+            var bombChance = 3;
+
+            if (value > bombChance)
+                return new BasicBlock();
+            else
+                return new BombBlock();
         }
     }
 }

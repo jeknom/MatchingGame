@@ -35,8 +35,8 @@ namespace MatchingGame
                             queue.Enqueue(point);
                 }
             }
-
-            GridOperations.RemoveCells(grid, positions);
+            if (positions.Count > 1)
+                GridOperations.RemoveCells(grid, positions);
         }
     }
 }

@@ -13,7 +13,7 @@ namespace MatchingGame
 
         public void Unload(CellGrid cellGrid, VisualGrid visualGrid)
         {
-            visualGrid.UnremovedBlocks.Add(position);
+            visualGrid.RemoveBuffer.Add(position);
         }
     }
 }

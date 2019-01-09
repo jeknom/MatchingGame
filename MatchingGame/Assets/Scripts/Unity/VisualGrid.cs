@@ -13,9 +13,9 @@ namespace MatchingGame
         [SerializeField] private GameObject basicBlock;
         [SerializeField] private GameObject bombBlock;
         private List<List<GameObject>> visualColumns = new List<List<GameObject>>();
-        private List<Point> unremovedBlocks = new List<Point>();
+        private List<Point> removeBuffer = new List<Point>();
 
-        public List<Point> UnremovedBlocks { get { return unremovedBlocks; } set { unremovedBlocks = value; } }
+        public List<Point> RemoveBuffer { get { return removeBuffer; } set { removeBuffer = value; } }
         
         public List<List<GameObject>> VisualColumns
         { 
@@ -39,9 +39,8 @@ namespace MatchingGame
                 var latestEvent = grid.Events.Dequeue();
                 latestEvent.Unload(grid, this);
             }
-
-            DestroyCellsAt(UnremovedBlocks);
-            UnremovedBlocks.Clear();
+            
+            ExecuteRemoveBuffer();
         }
 
         public void Cascade()
@@ -74,10 +73,10 @@ namespace MatchingGame
             visualColumns[index].Add(block);
         }
 
-        public void DestroyCellsAt(List<Point> points)
+        private void ExecuteRemoveBuffer()
         {
             var blocks = new List<GameObject>();
-            foreach (var point in points)
+            foreach (var point in removeBuffer)
                 blocks.Add(visualColumns[point.x][point.y]);
 
             foreach (var block in blocks)
@@ -100,6 +99,8 @@ namespace MatchingGame
                     visualColumns[columnX].Remove(block);
                 }
             }
+
+            RemoveBuffer.Clear();
         }
 
         private GameObject ToBlock(BlockType blockType)

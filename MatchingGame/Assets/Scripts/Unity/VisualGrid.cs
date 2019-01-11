@@ -47,7 +47,7 @@ namespace MatchingGame
                     var y = column.IndexOf(block);
                     var destination = new Vector3(x, y);
                     var currentTransform = block.GetComponent<RectTransform>();
-                    
+
                     if (currentTransform.position != destination)
                     {
                         var nextPosition = Vector3.MoveTowards(currentTransform.position, destination, cascadeSpeed * Time.deltaTime);
@@ -62,7 +62,7 @@ namespace MatchingGame
             block = Instantiate(block);
 
             var blockTransform = block.GetComponent<RectTransform>();
-            var startPosition = new Vector3(index, grid.Height, columns[index].Count);
+            var startPosition = new Vector3(index, grid.Height);
             blockTransform.SetParent(parentTransform, false);
             blockTransform.position = startPosition;
             columns[index].Add(block);

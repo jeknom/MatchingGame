@@ -12,16 +12,16 @@ namespace MatchingGame
         [SerializeField] private RectTransform parentTransform;
         [SerializeField] private GameObject basicBlock;
         [SerializeField] private GameObject bombBlock;
-        private List<List<GameObject>> visualColumns = new List<List<GameObject>>();
+        private List<List<GameObject>> columns = new List<List<GameObject>>();
         private List<Point> removeBuffer = new List<Point>();
 
         public List<Point> RemoveBuffer { get { return removeBuffer; } set { removeBuffer = value; } }
-        public List<List<GameObject>> VisualColumns { get { return visualColumns; } set { visualColumns = value; } }
+        public List<List<GameObject>> Columns { get { return columns; } set { columns = value; } }
 
         public void Build(CellGrid grid)
         {
             for (var x = 0; x < grid.Width; x++)
-                visualColumns.Add(new List<GameObject>());
+                columns.Add(new List<GameObject>());
         }
 
         public void Sync(CellGrid grid)
@@ -40,10 +40,10 @@ namespace MatchingGame
 
         public void Cascade()
         {
-            foreach (var column in visualColumns)
+            foreach (var column in columns)
                 foreach (var block in column)
                 {
-                    var x = visualColumns.IndexOf(column);
+                    var x = columns.IndexOf(column);
                     var y = column.IndexOf(block);
                     var destination = new Vector3(x, y);
                     var currentTransform = block.GetComponent<RectTransform>();
@@ -62,22 +62,22 @@ namespace MatchingGame
             block = Instantiate(block);
 
             var blockTransform = block.GetComponent<RectTransform>();
-            var startPosition = new Vector3(index, grid.Height, visualColumns[index].Count);
+            var startPosition = new Vector3(index, grid.Height, columns[index].Count);
             blockTransform.SetParent(parentTransform, false);
             blockTransform.position = startPosition;
-            visualColumns[index].Add(block);
+            columns[index].Add(block);
         }
 
         private void ExecuteRemoveBuffer()
         {
             var blocks = new List<GameObject>();
             foreach (var point in removeBuffer)
-                blocks.Add(visualColumns[point.x][point.y]);
+                blocks.Add(columns[point.x][point.y]);
 
             foreach (var block in blocks)
             {
                 var columnQuery =   
-                    from column in visualColumns
+                    from column in columns
                     where column.Contains(block)
                     select column;
 
@@ -87,11 +87,11 @@ namespace MatchingGame
                     throw new InvalidGridException("The block does not exist within the grid.");
                 else
                 {
-                    var columnX = visualColumns.IndexOf(containingColumn);
+                    var columnX = columns.IndexOf(containingColumn);
                     var columnY = containingColumn.IndexOf(block);
                     
-                    Destroy(visualColumns[columnX][columnY]);
-                    visualColumns[columnX].Remove(block);
+                    Destroy(columns[columnX][columnY]);
+                    columns[columnX].Remove(block);
                 }
             }
 

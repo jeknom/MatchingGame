@@ -1,4 +1,6 @@
+using System.Linq;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace MatchingGame
 {
@@ -13,32 +15,41 @@ namespace MatchingGame
 
         public void Activate(CellGrid grid)
         {
-            var cellPoint = GridQuery.ToPoint(grid, this);
-            var queue = new Queue<Point>();
-            queue.Enqueue(cellPoint);
+            var activatedPoint = GridQuery.ToPoint(grid, this);
+            var activationQueue = new Queue<Point>();
+            var choppingBlock = new List<Point>();
+            activationQueue.Enqueue(activatedPoint);
 
-            var positions = new List<Point>();
-            while (queue.Count > 0)
+            while (activationQueue.Count > 0)
             {
-                var position = queue.Dequeue();
-                
-                if (!positions.Contains(position))
+                var processing = activationQueue.Dequeue();
+
+                if (!choppingBlock.Contains(processing))
                 {
-                    positions.Add(position);
-                    
-                    var surroundingPositions = GridQuery.GetSurrounding(grid, position, true);
-                    foreach (var point in surroundingPositions)
-                    {
-                        var currentCell = grid.Columns[point.x][point.y];
-                        if (currentCell.Type == BlockType.Bomb)
-                            queue.Enqueue(point);
-                        else
-                            positions.Add(point);
-                    }
+                    var surrounding = GridQuery.GetSurrounding(grid, processing, true);
+
+                    var surroundingBombs = 
+                        from point in surrounding
+                        where grid.Columns[point.x][point.y].Type == BlockType.Bomb
+                        select point;
+
+                    var surroundingOthers =
+                        from point in surrounding
+                        where grid.Columns[point.x][point.y].Type != BlockType.Bomb
+                        select point;
+
+                    foreach (var point in surroundingBombs)
+                        activationQueue.Enqueue(point);
+
+                    foreach (var point in surroundingOthers)
+                        if (!choppingBlock.Contains(point))
+                            choppingBlock.Add(point);
+
+                    choppingBlock.Add(processing);
                 }
             }
 
-            GridOperations.RemoveCells(grid, positions);
+            GridOperations.RemoveCells(grid, choppingBlock);
         }
     }
 }

@@ -50,7 +50,7 @@ namespace MatchingGame
 
                     if (currentTransform.position != destination)
                     {
-                        var nextPosition = Vector3.MoveTowards(currentTransform.position, destination, cascadeSpeed * Time.deltaTime);
+                        var nextPosition = Vector3.MoveTowards(currentTransform.position, destination, cascadeSpeed * Time.smoothDeltaTime);
                         currentTransform.position = nextPosition;
                     }
                 }

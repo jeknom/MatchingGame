@@ -16,12 +16,7 @@ namespace MatchingGame
         private List<Point> removeBuffer = new List<Point>();
 
         public List<Point> RemoveBuffer { get { return removeBuffer; } set { removeBuffer = value; } }
-        
-        public List<List<GameObject>> VisualColumns
-        { 
-            get { return visualColumns; } 
-            set { visualColumns = value; }
-        }
+        public List<List<GameObject>> VisualColumns { get { return visualColumns; } set { visualColumns = value; } }
 
         public void Build(CellGrid grid)
         {

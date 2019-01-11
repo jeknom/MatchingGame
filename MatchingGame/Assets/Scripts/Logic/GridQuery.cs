@@ -48,10 +48,10 @@ namespace MatchingGame
 
         public static Point ToPoint(VisualGrid grid, GameObject block)
         {
-            foreach (var column in grid.VisualColumns)
+            foreach (var column in grid.Columns)
                 if (column.Contains(block))
                 {
-                    var pointX = grid.VisualColumns.IndexOf(column);
+                    var pointX = grid.Columns.IndexOf(column);
                     var pointY = column.IndexOf(block);
                     var point = new Point { x = pointX, y = pointY};
 

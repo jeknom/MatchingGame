@@ -62,7 +62,7 @@ namespace MatchingGame
         private static ICell RandomizeCell()
         {
             var value = Random.Range(1, 100);
-            var bombChance = 3;
+            var bombChance = 50;
 
             if (value > bombChance)
                 return new BasicBlock();

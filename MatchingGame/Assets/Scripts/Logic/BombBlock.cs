@@ -14,7 +14,6 @@ namespace MatchingGame
         public void Activate(CellGrid grid)
         {
             var cellPoint = GridQuery.ToPoint(grid, this);
-            var cell = grid.Columns[cellPoint.x][cellPoint.y];
             var queue = new Queue<Point>();
             queue.Enqueue(cellPoint);
 
@@ -22,7 +21,6 @@ namespace MatchingGame
             while (queue.Count > 0)
             {
                 var position = queue.Dequeue();
-                var currentCell = grid.Columns[position.x][position.y];
                 
                 if (!positions.Contains(position))
                 {
@@ -31,7 +29,11 @@ namespace MatchingGame
                     var surroundingPositions = GridQuery.GetSurrounding(grid, position, true);
                     foreach (var point in surroundingPositions)
                     {
-                        positions.Add(point);
+                        var currentCell = grid.Columns[point.x][point.y];
+                        if (currentCell.Type == BlockType.Bomb)
+                            queue.Enqueue(point);
+                        else
+                            positions.Add(point);
                     }
                 }
             }

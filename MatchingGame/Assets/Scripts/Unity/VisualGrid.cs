@@ -13,10 +13,10 @@ namespace MatchingGame
         [SerializeField] private GameObject basicBlock;
         [SerializeField] private GameObject bombBlock;
         private List<List<GameObject>> columns = new List<List<GameObject>>();
-        private List<Point> removeBuffer = new List<Point>();
+        private Queue<GameObject> removeBuffer = new Queue<GameObject>();
 
-        public List<Point> RemoveBuffer { get { return removeBuffer; } set { removeBuffer = value; } }
         public List<List<GameObject>> Columns { get { return columns; } set { columns = value; } }
+        public Queue<GameObject> RemoveBuffer { get { return removeBuffer; } set { removeBuffer = value; } }
 
         public void Build(CellGrid grid)
         {
@@ -70,12 +70,9 @@ namespace MatchingGame
 
         private void ExecuteRemoveBuffer()
         {
-            var blocks = new List<GameObject>();
-            foreach (var point in removeBuffer)
-                blocks.Add(columns[point.x][point.y]);
-
-            foreach (var block in blocks)
+            while (removeBuffer.Count > 0)
             {
+                var block = removeBuffer.Dequeue();
                 var columnQuery =   
                     from column in columns
                     where column.Contains(block)
@@ -89,13 +86,16 @@ namespace MatchingGame
                 {
                     var columnX = columns.IndexOf(containingColumn);
                     var columnY = containingColumn.IndexOf(block);
+                    var soundManager = GetComponent<SoundManager>();
+                    var randomNumber = Random.Range(0, soundManager.BlockBreakSounds.Count);
+                    var soundClip = soundManager.BlockBreakSounds[randomNumber];
                     
                     Destroy(columns[columnX][columnY]);
                     columns[columnX].Remove(block);
+                    if (!soundManager.GetComponent<AudioSource>().isPlaying)
+                        soundManager.PlaySound(soundClip);
                 }
             }
-
-            RemoveBuffer.Clear();
         }
 
         private GameObject ToBlock(BlockType blockType)

@@ -13,7 +13,7 @@ namespace MatchingGame
 
         public void Unload(CellGrid cellGrid, VisualGrid visualGrid)
         {
-            visualGrid.RemoveBuffer.Add(position);
+            visualGrid.RemoveBuffer.Enqueue(visualGrid.Columns[position.x][position.y]);
         }
     }
 }

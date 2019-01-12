@@ -10,7 +10,7 @@ namespace MatchingGame
         {
             if (grid == null)
                 throw new InvalidGridException("Cannot fill a null grid.");
-                
+
             if (grid.Events.Count > 0)
                 throw new InvalidGridException("Cannot add cells to the grid when the event queue is not empty.");
 
@@ -31,6 +31,9 @@ namespace MatchingGame
 
         public static void RemoveCells(CellGrid grid, List<Point> positions)
         {
+            if (grid == null)
+                throw new InvalidGridException("Cannot remove cells from a null grid.");
+
             if (grid.Events.Count > 0)
                 throw new InvalidGridException("Cannot remove cells from grid when the event queue is not empty.");
 

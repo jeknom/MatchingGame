@@ -4,8 +4,8 @@ namespace MatchingGame
 {
     public class CellGrid
     {
-        private int width = 6;
-        private int height = 10;
+        private int width;
+        private int height;
         private List<List<ICell>> columns = new List<List<ICell>>();
         private Queue<IGridEvent> events = new Queue<IGridEvent>();
 
@@ -14,9 +14,15 @@ namespace MatchingGame
         public List<List<ICell>> Columns { get { return columns; } set { columns = value; } }
         public Queue<IGridEvent> Events { get { return events; } set { events = value; } }
 
-        public CellGrid()
+        public CellGrid(int gridWidth, int gridHeight)
         {
-            for (var x = 0; x < Width; x++)
+            width = gridWidth;
+            height = gridHeight;
+
+            if (width < 2 || height < 2)
+                throw new InvalidGridException("The grid has to be at least two cell wide and tall.");
+
+            for (var x = 0; x < width; x++)
                 Columns.Add(new List<ICell>());
         }
     }

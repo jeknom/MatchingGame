@@ -8,7 +8,7 @@ namespace MatchingGame
     public class GameLogic : MonoBehaviour
     {
         private Controls controls = new Controls();
-        private CellGrid cellGrid = new CellGrid();
+        private CellGrid cellGrid = new CellGrid(6, 8);
         private VisualGrid visualGrid;
 
         private void Start()

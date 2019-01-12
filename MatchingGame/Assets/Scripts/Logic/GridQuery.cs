@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
@@ -8,6 +9,12 @@ namespace MatchingGame
     {
         public static List<Point> GetSurrounding(CellGrid grid, Point target, bool IsHexagonal)
         {
+            if (grid == null)
+                throw new ArgumentNullException("Cannot get surrounding points form a null grid.");
+
+            if ((target.x < 0 || target.x > grid.Width) || (target.y < 0 || target.y > grid.Height))
+                throw new ArgumentOutOfRangeException("The point is out of the range of this grid.");
+
             var positions = new List<Point>();
 
             positions.Add(new Point{ x = target.x + 1, y = target.y });
@@ -33,6 +40,12 @@ namespace MatchingGame
 
         public static Point ToPoint (CellGrid grid, ICell cell)
         {
+            if (grid == null)
+                throw new ArgumentNullException("Cannot convert to a point on a cellGrid which is null.");
+
+            if (cell == null)
+                throw new ArgumentNullException("Cannot convert a null cell into a point.");
+
             foreach (var column in grid.Columns)
                 if (column.Contains(cell))
                 {
@@ -48,6 +61,12 @@ namespace MatchingGame
 
         public static Point ToPoint(VisualGrid grid, GameObject block)
         {
+            if (grid == null)
+                throw new ArgumentNullException("Cannot convert to a point on a VisualGrid which is null.");
+
+            if (block == null)
+                throw new ArgumentNullException("Cannot convert a null block into a point.");
+
             foreach (var column in grid.Columns)
                 if (column.Contains(block))
                 {

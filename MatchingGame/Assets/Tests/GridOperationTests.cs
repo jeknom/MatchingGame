@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
@@ -13,7 +14,7 @@ namespace Tests
         [Test]
         public void Fill_GridIsNull_ThrowsAnException()
         {
-            Assert.Throws<InvalidGridException>
+            Assert.Throws<ArgumentNullException>
                 (() =>
                 {
                     CellGrid cellGrid = null;
@@ -24,10 +25,10 @@ namespace Tests
         [Test]
         public void Fill_CellGridQueueIsNotEmpty_ThrowsAnException()
         {
-            Assert.Throws<InvalidGridException>
+            Assert.Throws<InvalidOperationException>
                 (() =>
                 {
-                    var cellGrid = new CellGrid();
+                    var cellGrid = new CellGrid(2, 2);
                     cellGrid.Events.Enqueue(new AddEvent());
                     GridOperation.Fill(cellGrid);
                 });
@@ -36,7 +37,7 @@ namespace Tests
         [Test]
         public void RemoveCells_GridIsNull_ThrowsAnException()
         {
-            Assert.Throws<InvalidGridException>
+            Assert.Throws<ArgumentNullException>
                 (() =>
                 {
                     CellGrid cellGrid = null;
@@ -48,10 +49,10 @@ namespace Tests
         [Test]
         public void RemoveCells_CellGridQueueIsNotEmpty_ThrowsAnException()
         {
-            Assert.Throws<InvalidGridException>
+            Assert.Throws<InvalidOperationException>
                 (() =>
                 {
-                    var cellGrid = new CellGrid();
+                    var cellGrid = new CellGrid(2, 2);
                     cellGrid.Events.Enqueue(new AddEvent());
                     List<Point> fakePositions = new List<Point>();
                     GridOperation.RemoveCells(cellGrid, fakePositions);

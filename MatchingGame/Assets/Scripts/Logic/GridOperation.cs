@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using System.Linq;
 using System.Collections.Generic;
@@ -9,10 +10,10 @@ namespace MatchingGame
         public static void Fill(CellGrid grid)
         {
             if (grid == null)
-                throw new InvalidGridException("Cannot fill a null grid.");
+                throw new ArgumentNullException("Cannot fill a null grid.");
 
             if (grid.Events.Count > 0)
-                throw new InvalidGridException("Cannot add cells to the grid when the event queue is not empty.");
+                throw new InvalidOperationException("Cannot add cells to the grid when the event queue is not empty.");
 
             foreach (var column in grid.Columns)
                 while (column.Count < grid.Height)
@@ -32,17 +33,17 @@ namespace MatchingGame
         public static void RemoveCells(CellGrid grid, List<Point> positions)
         {
             if (grid == null)
-                throw new InvalidGridException("Cannot remove cells from a null grid.");
+                throw new ArgumentNullException("Cannot remove cells from a null grid.");
 
             if (grid.Events.Count > 0)
-                throw new InvalidGridException("Cannot remove cells from grid when the event queue is not empty.");
+                throw new InvalidOperationException("Cannot remove cells from grid when the event queue is not empty.");
 
             var cells = new List<ICell>();
 
             foreach (var point in positions)
             {
                 if ((grid.Columns.Count < point.x && point.x < 0) && (grid.Columns[point.x].Count < point.y && point.x < 0))
-                        throw new InvalidGridException("The cell is out of range.");
+                        throw new InvalidOperationException("The cell is out of range.");
                 
                 var cell = grid.Columns[point.x][point.y];
                 grid.Events.Enqueue(new RemoveEvent { Position = point });
@@ -57,17 +58,13 @@ namespace MatchingGame
                     select column;
 
                 var containingColumn = columnQuery.SingleOrDefault();
-
-                if (containingColumn == null)
-                    throw new InvalidGridException("The cell does not exist within the grid.");
-                else
-                    containingColumn.Remove(cell);
+                containingColumn.Remove(cell);
             }
         }
 
         private static ICell RandomizeCell()
         {
-            var value = Random.Range(1, 100);
+            var value = UnityEngine.Random.Range(1, 100);
             var bombChance = 3;
 
             if (value > bombChance)

@@ -8,6 +8,9 @@ namespace MatchingGame
     {
         public static void Fill(CellGrid grid)
         {
+            if (grid == null)
+                throw new InvalidGridException("Cannot fill a null grid.");
+                
             if (grid.Events.Count > 0)
                 throw new InvalidGridException("Cannot add cells to the grid when the event queue is not empty.");
 

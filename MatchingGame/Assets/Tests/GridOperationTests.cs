@@ -7,17 +7,32 @@ using MatchingGame;
 
 namespace Tests
 {
+    // METHODNAME_CONDITION_EXPECTATION
+
     public class GridOperationTests
     {
-        // METHODNAME_CONDITION_EXPECTATION
+        [Test]
+        public void Fill_GridIsNull_ThrowsAnException()
+        {
+            Assert.Throws<InvalidGridException>
+                (delegate 
+                {
+                    var cellGrid = new CellGrid();
+                    cellGrid = null;
+                    GridOperation.Fill(cellGrid);
+                });
+        }
+
         [Test]
         public void Fill_CellGridQueueIsNotEmpty_ThrowsAnException()
         {
-            var cellGrid = new CellGrid();
-            cellGrid.Events.Enqueue(new AddEvent());
-            GridOperation.Fill(new CellGrid());
             Assert.Throws<InvalidGridException>
-                (delegate { throw new InvalidGridException("Exception"); });
+                (delegate 
+                {
+                    var cellGrid = new CellGrid();
+                    cellGrid.Events.Enqueue(new AddEvent());
+                    GridOperation.Fill(cellGrid);
+                });
         }
     }
 }

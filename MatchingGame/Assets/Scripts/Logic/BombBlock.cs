@@ -49,7 +49,7 @@ namespace MatchingGame
                 }
             }
 
-            GridOperations.RemoveCells(grid, choppingBlock);
+            GridOperation.RemoveCells(grid, choppingBlock);
         }
     }
 }

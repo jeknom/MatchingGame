@@ -28,7 +28,7 @@ namespace MatchingGame
                     cellGrid.Columns[point.x][point.y].Activate(cellGrid);
                 }
                 else if (cellGrid.Events.Count == 0)
-                    GridOperations.Fill(cellGrid);
+                    GridOperation.Fill(cellGrid);
                 else if (cellGrid.Events.Count > 0)
                     visualGrid.Sync(cellGrid);
                     

@@ -36,7 +36,7 @@ namespace MatchingGame
                 }
             }
             if (positions.Count > 1)
-                GridOperations.RemoveCells(grid, positions);
+                GridOperation.RemoveCells(grid, positions);
         }
     }
 }

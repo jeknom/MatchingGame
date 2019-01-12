@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace MatchingGame
 {
-    public class GridOperations
+    public class GridOperation
     {
         public static void Fill(CellGrid grid)
         {

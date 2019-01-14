@@ -4,6 +4,6 @@
     {
         BlockType Block { get; set; }
         Point Position { get; set; }
-        void Unload(CellGrid cellGrid, VisualGrid visualGrid);
+        void Process(CellGrid cellGrid, VisualGrid visualGrid);
     }   
 }

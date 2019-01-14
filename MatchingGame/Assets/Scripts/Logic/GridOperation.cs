@@ -1,7 +1,8 @@
 using System;
-using UnityEngine;
 using System.Linq;
 using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace MatchingGame
 {
@@ -9,11 +10,8 @@ namespace MatchingGame
     {
         public static void Fill(CellGrid grid)
         {
-            if (grid == null)
-                throw new ArgumentNullException("Cannot fill a null grid.");
-
-            if (grid.Events.Count > 0)
-                throw new InvalidOperationException("Cannot add cells to the grid when the event queue is not empty.");
+            Assert.IsNotNull<CellGrid>(grid, "Cannot fill a null grid object.");
+            Assert.AreEqual<int>(0, grid.Events.Count, "The event queue needs to be empty before filling the grid.");
 
             foreach (var column in grid.Columns)
                 while (column.Count < grid.Height)
@@ -25,28 +23,21 @@ namespace MatchingGame
                     point.x = grid.Columns.IndexOf(column);
                     point.y = column.IndexOf(cell);
                     
-                    var gridEvent = new AddEvent { Position = point };
+                    var gridEvent = new AddEvent(point);
                     grid.Events.Enqueue(gridEvent);
                 }
         }
 
         public static void RemoveCells(CellGrid grid, List<Point> positions)
         {
-            if (grid == null)
-                throw new ArgumentNullException("Cannot remove cells from a null grid.");
-
-            if (grid.Events.Count > 0)
-                throw new InvalidOperationException("Cannot remove cells from grid when the event queue is not empty.");
+            Debug.Assert(grid != null, "Cannot remove cells from a null CellGrid object.");
+            Debug.Assert(grid.Events.Count == 0, "The Events queue needs to be empty before removing cells.");
 
             var cells = new List<ICell>();
-
             foreach (var point in positions)
             {
-                if ((grid.Columns.Count < point.x && point.x < 0) && (grid.Columns[point.x].Count < point.y && point.x < 0))
-                        throw new InvalidOperationException("The cell is out of range.");
-                
                 var cell = grid.Columns[point.x][point.y];
-                grid.Events.Enqueue(new RemoveEvent { Position = point });
+                grid.Events.Enqueue(new RemoveEvent(point));
                 cells.Add(grid.Columns[point.x][point.y]);
             }
 

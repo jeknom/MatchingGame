@@ -299,6 +299,21 @@ MonoBehaviour:
   parentTransform: {fileID: 1795124462}
   basicBlock: {fileID: 1036430746746016, guid: 2cdfda9493bbf1f459468b203aadbaea, type: 3}
   bombBlock: {fileID: 1453262822159956, guid: a36e4a38ee57140999a82b3ab195aca2, type: 3}
+  yellow:
+    serializedVersion: 2
+    rgba: 4278253567
+  red:
+    serializedVersion: 2
+    rgba: 4278194687
+  blue:
+    serializedVersion: 2
+    rgba: 4294939392
+  green:
+    serializedVersion: 2
+    rgba: 4278386432
+  defaultColour:
+    serializedVersion: 2
+    rgba: 4294967295
 --- !u!4 &1287860120
 Transform:
   m_ObjectHideFlags: 0

@@ -8,12 +8,18 @@ namespace MatchingGame
         private Point position;
         private BlockType blockType;
 
-        public Point Position { get { return position; } set { position = value; } }
-        public BlockType Block { get { return blockType; } set { blockType = value; } }
+        public Point Position { get { return this.position; } set { this.position = value; } }
+        public BlockType Block { get { return this.blockType; } set { this.blockType = value; } }
 
-        public void Unload(CellGrid cellGrid, VisualGrid visualGrid)
+        public RemoveEvent(Point position)
         {
-            visualGrid.RemoveBuffer.Enqueue(visualGrid.Columns[position.x][position.y]);
+            this.position = position;
+        }
+
+        public void Process(CellGrid cellGrid, VisualGrid visualGrid)
+        {
+            var block = visualGrid.Columns[this.position.x][this.position.y];
+            visualGrid.RemoveBuffer.Enqueue(block);
         }
     }
 }

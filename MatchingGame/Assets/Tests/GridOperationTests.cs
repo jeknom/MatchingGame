@@ -11,10 +11,15 @@ namespace Tests
     // METHODNAME_CONDITION_EXPECTATION
     public class GridOperationTests
     {
+        public GridOperationTests()
+        {
+            UnityEngine.Assertions.Assert.raiseExceptions = true;
+        }
+
         [Test]
         public void Fill_GridIsNull_ThrowsAnException()
         {
-            Assert.Throws<ArgumentNullException>
+            Assert.Throws<AssertionException>
                 (() =>
                 {
                     CellGrid cellGrid = null;
@@ -25,37 +30,13 @@ namespace Tests
         [Test]
         public void Fill_CellGridQueueIsNotEmpty_ThrowsAnException()
         {
-            Assert.Throws<InvalidOperationException>
+            Assert.Throws<AssertionException>
                 (() =>
                 {
                     var cellGrid = new CellGrid(2, 2);
-                    cellGrid.Events.Enqueue(new AddEvent());
+                    var fakePoint = new Point { x = 0, y = 0 };
+                    cellGrid.Events.Enqueue(new AddEvent(fakePoint));
                     GridOperation.Fill(cellGrid);
-                });
-        }
-
-        [Test]
-        public void RemoveCells_GridIsNull_ThrowsAnException()
-        {
-            Assert.Throws<ArgumentNullException>
-                (() =>
-                {
-                    CellGrid cellGrid = null;
-                    List<Point> fakePositions = new List<Point>();
-                    GridOperation.RemoveCells(cellGrid, fakePositions);
-                });
-        }
-
-        [Test]
-        public void RemoveCells_CellGridQueueIsNotEmpty_ThrowsAnException()
-        {
-            Assert.Throws<InvalidOperationException>
-                (() =>
-                {
-                    var cellGrid = new CellGrid(2, 2);
-                    cellGrid.Events.Enqueue(new AddEvent());
-                    List<Point> fakePositions = new List<Point>();
-                    GridOperation.RemoveCells(cellGrid, fakePositions);
                 });
         }
     }

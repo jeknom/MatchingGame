@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using UnityEngine;
+using UnityEngine.Assertions;
+using System.Collections.Generic;
 
 namespace MatchingGame
 {
@@ -11,16 +13,16 @@ namespace MatchingGame
 
         public int Width { get { return width; } }
         public int Height { get { return height; } }
-        public List<List<ICell>> Columns { get { return columns; } set { columns = value; } }
-        public Queue<IGridEvent> Events { get { return events; } set { events = value; } }
+        public List<List<ICell>> Columns { get { return columns; } }
+        public Queue<IGridEvent> Events { get { return events; } }
 
         public CellGrid(int gridWidth, int gridHeight)
         {
-            width = gridWidth;
-            height = gridHeight;
+            Assert.AreEqual<int>(2, gridWidth, "The grid has to be at least two Cells wide.");
+            Assert.AreEqual<int>(2, gridHeight, "The grid has to be at least two Cells tall.");
 
-            if (width < 2 || height < 2)
-                throw new InvalidGridException("The grid has to be at least two cell wide and tall.");
+            this.width = gridWidth;
+            this.height = gridHeight;
 
             for (var x = 0; x < width; x++)
                 Columns.Add(new List<ICell>());

@@ -9,14 +9,11 @@ namespace MatchingGame
     {
         public static List<Point> GetSurrounding(CellGrid grid, Point target, bool IsHexagonal)
         {
-            if (grid == null)
-                throw new ArgumentNullException("Cannot get surrounding points form a null grid.");
-
-            if ((target.x < 0 || target.x > grid.Width) || (target.y < 0 || target.y > grid.Height))
-                throw new ArgumentOutOfRangeException("The point is out of the range of this grid.");
+            Debug.Assert(grid != null, "Cannot get surrounding from a null CellGrid.");
+            var isWithinGrid = (target.x >= 0 || target.x < grid.Width) || (target.y >= 0 || target.y < grid.Height);
+            Debug.Assert(isWithinGrid, "The cell needs to exist within the CellGrid");
 
             var positions = new List<Point>();
-
             positions.Add(new Point{ x = target.x + 1, y = target.y });
             positions.Add(new Point{ x = target.x - 1, y = target.y });
             positions.Add(new Point{ x = target.x, y = target.y + 1 });
@@ -40,11 +37,8 @@ namespace MatchingGame
 
         public static Point ToPoint (CellGrid grid, ICell cell)
         {
-            if (grid == null)
-                throw new ArgumentNullException("Cannot convert to a point on a cellGrid which is null.");
-
-            if (cell == null)
-                throw new ArgumentNullException("Cannot convert a null cell into a point.");
+            Debug.Assert(grid != null, "Cannot convert to a point when the CellGrid is null.");
+            Debug.Assert(cell != null, "Cannot convert a null Cell into a point.");
 
             foreach (var column in grid.Columns)
                 if (column.Contains(cell))
@@ -55,17 +49,14 @@ namespace MatchingGame
 
                     return point;
                 }
-            
-            throw new InvalidGridException("The cell grid does not contain the given cell.");
+
+            throw new InvalidOperationException("The CellGrid does not contain the given cell.");
         }
 
         public static Point ToPoint(VisualGrid grid, GameObject block)
         {
-            if (grid == null)
-                throw new ArgumentNullException("Cannot convert to a point on a VisualGrid which is null.");
-
-            if (block == null)
-                throw new ArgumentNullException("Cannot convert a null block into a point.");
+            Debug.Assert(grid != null, "Cannot convert to a point when the VisualGrid is null.");
+            Debug.Assert(block != null, "Cannot convert a null GameObject into a point.");
 
             foreach (var column in grid.Columns)
                 if (column.Contains(block))
@@ -77,7 +68,7 @@ namespace MatchingGame
                     return point;
                 }
 
-            throw new InvalidVisualException("The GameObject needs to exist on the visual matrix.");
+            throw new InvalidOperationException("The GameObject needs to exist on the visual matrix.");
         }
     }
 }

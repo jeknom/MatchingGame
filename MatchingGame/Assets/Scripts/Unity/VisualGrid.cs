@@ -12,27 +12,31 @@ namespace MatchingGame
         [SerializeField] private RectTransform parentTransform;
         [SerializeField] private GameObject basicBlock;
         [SerializeField] private GameObject bombBlock;
+        [SerializeField] private Color32 yellow;
+        [SerializeField] private Color32 red;
+        [SerializeField] private Color32 blue;
+        [SerializeField] private Color32 green;
+        [SerializeField] private Color32 defaultColour;
         private List<List<GameObject>> columns = new List<List<GameObject>>();
         private Queue<GameObject> removeBuffer = new Queue<GameObject>();
 
-        public List<List<GameObject>> Columns { get { return columns; } set { columns = value; } }
-        public Queue<GameObject> RemoveBuffer { get { return removeBuffer; } set { removeBuffer = value; } }
+        public List<List<GameObject>> Columns { get { return this.columns; } }
+        public Queue<GameObject> RemoveBuffer { get { return removeBuffer; } }
 
         public void Build(CellGrid grid)
         {
             for (var x = 0; x < grid.Width; x++)
-                columns.Add(new List<GameObject>());
+                this.columns.Add(new List<GameObject>());
         }
 
         public void Sync(CellGrid grid)
         {
-            if (grid.Events.Count <= 0)
-                throw new InvalidVisualException("There is nothing to sync.");
+            Debug.Assert(grid.Events.Count > 0, "There is nothing to sync.");
 
             while (grid.Events.Count > 0)
             {
                 var latestEvent = grid.Events.Dequeue();
-                latestEvent.Unload(grid, this);
+                latestEvent.Process(grid, this);
             }
             
             ExecuteRemoveBuffer();
@@ -40,10 +44,10 @@ namespace MatchingGame
 
         public void Cascade()
         {
-            foreach (var column in columns)
+            foreach (var column in this.columns)
                 foreach (var block in column)
                 {
-                    var x = columns.IndexOf(column);
+                    var x = this.columns.IndexOf(column);
                     var y = column.IndexOf(block);
                     var destination = new Vector3(x, y);
                     var currentTransform = block.GetComponent<RectTransform>();
@@ -58,75 +62,61 @@ namespace MatchingGame
 
         public void InstantiateCellAt(CellGrid grid, BlockType blockType, int index)
         {
-            var block = ToBlock(blockType);
-            block = Instantiate(block);
-
+            var block = Instantiate(ToBlock(blockType));
             var blockTransform = block.GetComponent<RectTransform>();
             var startPosition = new Vector3(index, grid.Height);
-            blockTransform.SetParent(parentTransform, false);
+            
+            blockTransform.SetParent(this.parentTransform, false);
             blockTransform.position = startPosition;
-            columns[index].Add(block);
+            this.columns[index].Add(block);
         }
 
         private void ExecuteRemoveBuffer()
         {
-            while (removeBuffer.Count > 0)
+            while (this.removeBuffer.Count > 0)
             {
-                var block = removeBuffer.Dequeue();
+                var block = this.removeBuffer.Dequeue();
                 var columnQuery =   
-                    from column in columns
+                    from column in this.columns
                     where column.Contains(block)
                     select column;
 
-                var containingColumn = columnQuery.SingleOrDefault();
-
-                if (containingColumn == null)
-                    throw new InvalidGridException("The block does not exist within the grid.");
-                else
-                {
-                    var columnX = columns.IndexOf(containingColumn);
-                    var columnY = containingColumn.IndexOf(block);
-                    var soundManager = GetComponent<SoundManager>();
-                    var randomNumber = Random.Range(0, soundManager.BlockBreakSounds.Count);
-                    var soundClip = soundManager.BlockBreakSounds[randomNumber];
-                    
-                    Destroy(columns[columnX][columnY]);
-                    columns[columnX].Remove(block);
-                    if (!soundManager.GetComponent<AudioSource>().isPlaying)
-                        soundManager.PlaySound(soundClip);
-                }
+                var containingColumn = columnQuery.Single();
+                var columnX = this.columns.IndexOf(containingColumn);
+                var columnY = containingColumn.IndexOf(block);
+                var soundManager = GetComponent<SoundManager>();
+                var randomNumber = Random.Range(0, soundManager.BlockBreakSounds.Count);
+                var soundClip = soundManager.BlockBreakSounds[randomNumber];
+                
+                Destroy(this.columns[columnX][columnY]);
+                this.columns[columnX].Remove(block);
+                if (!soundManager.GetComponent<AudioSource>().isPlaying)
+                    soundManager.PlaySound(soundClip);
             }
         }
 
         private GameObject ToBlock(BlockType blockType)
         {
-            GameObject block;
+            GameObject block = this.basicBlock;
+            Color32 colour = new Color32();
 
-            if ((int)blockType < 4)
-            {
-                block = basicBlock;
-                var image = block.GetComponent<Image>();
-
-                if ((int)blockType == 0)
-                    image.color = new Color32(255, 255, 0, 255);
-                else if ((int)blockType == 1)
-                    image.color = new Color32(255, 0, 0, 255);
-                else if ((int)blockType == 2)
-                    image.color = new Color32(0, 255, 0, 255);
-                else if ((int)blockType == 3)
-                    image.color = new Color32(0, 0, 255, 255);
-                else
-                    throw new InvalidVisualException("An unexpected error has occurred.");
-
-                return block;
-            }
+            if (blockType == BlockType.Yellow)
+                colour = this.yellow;
+            else if (blockType == BlockType.Red)
+                colour = this.red;
+            else if (blockType == BlockType.Green)
+                colour = this.green;
+            else if (blockType == BlockType.Blue)
+                colour = this.blue;
             else if (blockType == BlockType.Bomb)
             {
+                colour = this.defaultColour;
                 block = bombBlock;
-                return block;
             }
-            else
-                throw new InvalidVisualException("Cannot turn non-existing BlockType into a GameObject.");
+            
+            var image = block.GetComponent<Image>().color = colour;
+
+            return block;
         }
     }   
 }

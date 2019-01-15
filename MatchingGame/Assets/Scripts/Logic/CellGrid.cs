@@ -1,6 +1,6 @@
-﻿using UnityEngine;
-using UnityEngine.Assertions;
+﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace MatchingGame
 {
@@ -18,8 +18,8 @@ namespace MatchingGame
 
         public CellGrid(int gridWidth, int gridHeight)
         {
-            Assert.AreEqual<int>(2, gridWidth, "The grid has to be at least two Cells wide.");
-            Assert.AreEqual<int>(2, gridHeight, "The grid has to be at least two Cells tall.");
+            if (gridWidth < 2 || gridHeight < 2)
+                throw new ArgumentOutOfRangeException("CellGrid height and width must be two or more Cells.");
 
             this.width = gridWidth;
             this.height = gridHeight;

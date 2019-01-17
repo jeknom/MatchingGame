@@ -25,6 +25,8 @@ namespace MatchingGame
 
         public void Build(CellGrid grid)
         {
+            Debug.Assert(grid != null, "Cannot build from a null CellGrid.");
+
             for (var x = 0; x < grid.Width; x++)
                 this.columns.Add(new List<GameObject>());
         }
@@ -62,6 +64,9 @@ namespace MatchingGame
 
         public void InstantiateCellAt(CellGrid grid, BlockType blockType, int index)
         {
+            Debug.Assert(grid != null, "Cannot instantiate from a null CellGrid.");
+            Debug.Assert(index >= 0 && index < grid.Width, "The CellGrid does not contain that many columns.");
+
             var block = Instantiate(ToBlock(blockType));
             var blockTransform = block.GetComponent<RectTransform>();
             var startPosition = new Vector3(index, grid.Height);

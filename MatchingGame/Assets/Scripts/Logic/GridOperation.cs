@@ -10,10 +10,8 @@ namespace MatchingGame
     {
         public static void Fill(CellGrid grid)
         {
-            if (grid == null)
-                throw new ArgumentNullException("Cannot fill a null CellGrid.");
-            if (grid.Events.Count > 0)
-                throw new InvalidOperationException("CellGrid Events queue needs to be cleared before filling it.");
+            Debug.Assert(grid != null, "Cannot fill a null CellGrid.");
+            Debug.Assert(grid.Events.Count == 0, "CellGrid Events queue needs to be cleared before filling it.");
 
             foreach (var column in grid.Columns)
                 while (column.Count < grid.Height)
@@ -32,10 +30,8 @@ namespace MatchingGame
 
         public static void RemoveCells(CellGrid grid, List<Point> positions)
         {
-            if (grid == null || positions == null)
-                throw new ArgumentNullException("Cannot remove Cells from a null CellGrid.");
-            if (grid.Events.Count > 0)
-                throw new InvalidOperationException("CellGrid Events queue needs to be cleared before removing Cells from it.");
+            Debug.Assert(grid != null && positions != null, "Cannot remove Cells from a null CellGrid.");
+            Debug.Assert(grid.Events.Count == 0, "CellGrid Events queue needs to be cleared before removing Cells from it.");
 
             var cells = new List<ICell>();
             foreach (var point in positions)

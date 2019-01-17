@@ -18,8 +18,7 @@ namespace MatchingGame
 
         public CellGrid(int gridWidth, int gridHeight)
         {
-            if (gridWidth < 2 || gridHeight < 2)
-                throw new ArgumentOutOfRangeException("CellGrid height and width must be two or more Cells.");
+            Debug.Assert(gridWidth > 1 && gridHeight > 1, "CellGrid height and width must be two or more Cells.");
 
             this.width = gridWidth;
             this.height = gridHeight;

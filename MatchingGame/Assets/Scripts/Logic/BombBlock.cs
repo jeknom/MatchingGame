@@ -15,6 +15,8 @@ namespace MatchingGame
 
         public void Activate(CellGrid grid)
         {
+            Debug.Assert(grid != null, "Cannot activate BombBlock on a null CellGrid.");
+
             var activatedPoint = GridQuery.ToPoint(grid, this);
             var activationQueue = new Queue<Point>();
             var choppingBlock = new List<Point>();

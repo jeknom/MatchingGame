@@ -8,7 +8,7 @@ namespace MatchingGame
         [SerializeField] List<AudioClip> blockBreakSounds = new List<AudioClip>();
         private AudioSource audioSource;
 
-        public List<AudioClip> BlockBreakSounds { get { return blockBreakSounds; } set { blockBreakSounds = value; } }
+        public List<AudioClip> BlockBreakSounds { get { return blockBreakSounds; } }
         
         private void Start()
         {
@@ -17,6 +17,7 @@ namespace MatchingGame
 
         public void PlaySound(AudioClip sound)
         {
+            Debug.Assert(sound != null, "Cannot play a null AudioClip");
             audioSource.PlayOneShot(sound);
         }
     }

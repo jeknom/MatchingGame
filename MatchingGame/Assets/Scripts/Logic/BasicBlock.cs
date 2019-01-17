@@ -14,6 +14,8 @@ namespace MatchingGame
 
         public void Activate(CellGrid grid)
         {
+            Debug.Assert(grid != null, "Cannot activate BasicBlock on a null CellGrid.");
+
             var cellPoint = GridQuery.ToPoint(grid, this);
             var cell = grid.Columns[cellPoint.x][cellPoint.y];
             var queue = new Queue<Point>();

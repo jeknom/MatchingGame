@@ -54,6 +54,7 @@ namespace MatchingGame
             GridOperation.RemoveCells(grid, choppingBlock);
             
             var soundManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<SoundManager>();
+            Debug.Assert(soundManager != null, "Could not locate SoundManager");
             soundManager.PlaySound(this.Type);
         }
     }

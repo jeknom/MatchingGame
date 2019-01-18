@@ -68,7 +68,7 @@ namespace MatchingGame
                     return point;
                 }
 
-            throw new InvalidOperationException("The GameObject needs to exist on the visual matrix.");
+            throw new InvalidOperationException("The VisualGrid does not contain the given block.");
         }
     }
 }

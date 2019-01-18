@@ -38,7 +38,12 @@ namespace MatchingGame
                 }
             }
             if (positions.Count > 1)
+            {
                 GridOperation.RemoveCells(grid, positions);
+
+                var soundManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<SoundManager>();
+                soundManager.PlaySound(this.Type);
+            }
         }
     }
 }

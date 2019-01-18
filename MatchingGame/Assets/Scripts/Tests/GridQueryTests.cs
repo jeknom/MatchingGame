@@ -26,5 +26,31 @@ namespace Tests
                 if (!surrounding.Contains(position))
                     throw new MissingMemberException("Surrounding positions did not contain the required members.");
         }
+
+        [Test]
+        public void ToPoint_InvalidCell_ThrowsAnException()
+        {
+            Assert.Throws<InvalidOperationException>
+                (()=>
+                {
+                    var cellGrid = new CellGrid(2, 2);
+                    var cell = new BasicBlock();
+                    GridQuery.ToPoint(cellGrid, cell);
+                });
+        }
+
+        [UnityTest]
+        public IEnumerator ToPoint_InvalidBlock_ThrowsAnException()
+        {
+            Assert.Throws<InvalidOperationException>
+                (()=>
+                {
+                    var visualGrid = GameObject.FindGameObjectWithTag("GameManager").GetComponent<VisualGrid>();
+                    var block = new GameObject();
+                    GridQuery.ToPoint(visualGrid, block);
+                });
+
+            yield return null;
+        }
     }
 }

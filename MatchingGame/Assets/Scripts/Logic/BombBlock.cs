@@ -52,6 +52,9 @@ namespace MatchingGame
             }
 
             GridOperation.RemoveCells(grid, choppingBlock);
+            
+            var soundManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<SoundManager>();
+            soundManager.PlaySound(this.Type);
         }
     }
 }

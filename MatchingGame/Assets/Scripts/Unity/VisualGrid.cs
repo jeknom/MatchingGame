@@ -89,14 +89,9 @@ namespace MatchingGame
                 var containingColumn = columnQuery.Single();
                 var columnX = this.columns.IndexOf(containingColumn);
                 var columnY = containingColumn.IndexOf(block);
-                var soundManager = GetComponent<SoundManager>();
-                var randomNumber = Random.Range(0, soundManager.BlockBreakSounds.Count);
-                var soundClip = soundManager.BlockBreakSounds[randomNumber];
                 
                 Destroy(this.columns[columnX][columnY]);
                 this.columns[columnX].Remove(block);
-                if (!soundManager.GetComponent<AudioSource>().isPlaying)
-                    soundManager.PlaySound(soundClip);
             }
         }
 
@@ -119,7 +114,7 @@ namespace MatchingGame
                 block = bombBlock;
             }
             
-            var image = block.GetComponent<Image>().color = colour;
+            block.GetComponent<Image>().color = colour;
 
             return block;
         }

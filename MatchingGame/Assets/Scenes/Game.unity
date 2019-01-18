@@ -448,15 +448,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b795ed63ec3b6e4ea06f5cbb40640b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  blockBreakSounds:
-  - {fileID: 8300000, guid: a5beff00ba2f6c048a21bec34ed305a4, type: 3}
-  - {fileID: 8300000, guid: b44e21dfb471b9b459939b48405d9496, type: 3}
-  - {fileID: 8300000, guid: 6c29dc27aba0ae4428ab6e7d5dc60682, type: 3}
-  - {fileID: 8300000, guid: 8fc5c957e90c4f24bbd8d1b117dc227f, type: 3}
-  - {fileID: 8300000, guid: 2eebf46fdf2e94b47be96e1491c37784, type: 3}
-  - {fileID: 8300000, guid: 6f99097ed9bdfe847aa840a7b094a2e1, type: 3}
-  - {fileID: 8300000, guid: e8374b6e3f28d864b8e90ab74cbf1203, type: 3}
-  - {fileID: 8300000, guid: 0088b9ce75c0bb6489bd4bce1a60e9c4, type: 3}
+  basicBlock: {fileID: 8300000, guid: 5465d42711969294db500d87733fd07d, type: 3}
+  bombBlock: {fileID: 8300000, guid: b62ae1fdc8a411d4388661d8a1ee5440, type: 3}
 --- !u!1 &1795124458
 GameObject:
   m_ObjectHideFlags: 0

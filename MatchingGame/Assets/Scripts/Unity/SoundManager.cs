@@ -5,20 +5,35 @@ namespace MatchingGame
 {
     public class SoundManager : MonoBehaviour
     {
-        [SerializeField] List<AudioClip> blockBreakSounds = new List<AudioClip>();
+        [SerializeField] AudioClip basicBlock;
+        [SerializeField] AudioClip bombBlock;
         private AudioSource audioSource;
-
-        public List<AudioClip> BlockBreakSounds { get { return blockBreakSounds; } }
+        private Queue<AudioClip> soundQueue = new Queue<AudioClip>();
         
         private void Start()
         {
-            audioSource = GetComponent<AudioSource>();
+            this.audioSource = GetComponent<AudioSource>();
         }
 
-        public void PlaySound(AudioClip sound)
+        private void Update()
         {
-            Debug.Assert(sound != null, "Cannot play a null AudioClip");
-            audioSource.PlayOneShot(sound);
+            if (soundQueue.Count > 0 && !audioSource.isPlaying)
+            {
+                var clip = soundQueue.Dequeue();
+                this.audioSource.PlayOneShot(clip);
+            }
+        }
+
+        public void PlaySound(BlockType blockType)
+        {
+            AudioClip sound;
+            
+            if (blockType == BlockType.Bomb)
+                sound = this.bombBlock;
+            else
+                sound = this.basicBlock;
+
+            soundQueue.Enqueue(sound);
         }
     }
 }

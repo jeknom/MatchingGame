@@ -12,7 +12,7 @@ namespace MatchingGame
         private void OnDrawGizmos() 
         {
             var cellGrid = new CellGrid(gridWidth, gridHeight);
-            GridOperation.Fill(cellGrid);
+            CellGridOperation.Fill(cellGrid);
 
             foreach (var column in cellGrid.Columns)
                 foreach (var cell in column)

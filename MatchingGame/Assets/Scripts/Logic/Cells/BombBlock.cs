@@ -13,7 +13,7 @@ namespace MatchingGame
             Type = BlockType.Bomb;
         }
 
-        public void Activate(CellGrid grid)
+        public List<Point> GetPositionsOrDefault(CellGrid grid)
         {
             Debug.Assert(grid != null, "Cannot activate BombBlock on a null CellGrid.");
 
@@ -50,12 +50,11 @@ namespace MatchingGame
                     choppingBlock.Add(processing);
                 }
             }
-
-            GridOperation.RemoveCells(grid, choppingBlock);
-            
             var soundManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<SoundManager>();
             Debug.Assert(soundManager != null, "Could not locate SoundManager");
             soundManager.PlaySound(this.Type);
+
+            return choppingBlock;
         }
     }
 }

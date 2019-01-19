@@ -14,7 +14,7 @@ namespace Tests
         public void GetSurrounding_ValidCellGrid_ReturnsCorrectPositions()
         {
             var cellGrid = new CellGrid(2, 2);
-            GridOperation.Fill(cellGrid);
+            CellGridOperation.Fill(cellGrid);
 
             var surrounding = GridQuery.GetSurrounding(cellGrid, new Point { x = 0, y = 0 }, false);
             var positionArray = new Point[] {

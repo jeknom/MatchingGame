@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 
 namespace MatchingGame
@@ -6,8 +7,8 @@ namespace MatchingGame
     {
         private Controls controls = new Controls();
         private CellGrid cellGrid = new CellGrid(6, 8);
-        private VisualGrid visualGrid;
         private ScoreManager scoreManager;
+        private VisualGrid visualGrid;
 
         private void Start()
         {
@@ -16,6 +17,8 @@ namespace MatchingGame
             
             this.scoreManager = GetComponent<ScoreManager>();
             this.scoreManager.Moves = Random.Range(10, 20);
+            this.scoreManager.ObjectiveType = (BlockType)Random.Range(0, 3);
+            this.scoreManager.ObjectiveCount = Random.Range(20, 25);
         }
 
         private void Update()
@@ -26,12 +29,20 @@ namespace MatchingGame
             {
                 var point = GridQuery.ToPoint(this.visualGrid, interaction);
                 var cell = cellGrid.Columns[point.x][point.y];
-                cell.Activate(cellGrid);
-                
-                this.scoreManager.Moves--;
+                var positions = cell.GetPositionsOrDefault(cellGrid);
+
+                if (positions != null)
+                {
+                    this.scoreManager.Moves--;
+                    foreach (var position in positions)
+                        if (cellGrid.Columns[position.x][position.y].Type == this.scoreManager.ObjectiveType)
+                            this.scoreManager.ObjectiveCount--;
+                    
+                    CellGridOperation.RemoveCells(cellGrid, positions);
+                }
             }
             else if (cellGrid.Events.Count == 0)
-                GridOperation.Fill(cellGrid);
+                CellGridOperation.Fill(cellGrid);
             else if (cellGrid.Events.Count > 0)
                 this.visualGrid.Sync(cellGrid);
                 

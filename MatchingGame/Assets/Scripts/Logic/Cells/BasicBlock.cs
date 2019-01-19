@@ -12,7 +12,7 @@ namespace MatchingGame
             Type = (BlockType)Random.Range(0, 3);
         }
 
-        public void Activate(CellGrid grid)
+        public List<Point> GetPositionsOrDefault(CellGrid grid)
         {
             Debug.Assert(grid != null, "Cannot activate BasicBlock on a null CellGrid.");
 
@@ -39,12 +39,14 @@ namespace MatchingGame
             }
             if (positions.Count > 1)
             {
-                GridOperation.RemoveCells(grid, positions);
-
                 var soundManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<SoundManager>();
                 Debug.Assert(soundManager != null, "Could not locate SoundManager");
                 soundManager.PlaySound(this.Type);
+
+                return positions;
             }
+
+            return null;
         }
     }
 }

@@ -1,12 +1,10 @@
-using System;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 namespace MatchingGame
 {
-    public class GridOperation
+    public class CellGridOperation
     {
         public static void Fill(CellGrid grid)
         {
@@ -37,7 +35,7 @@ namespace MatchingGame
             foreach (var point in positions)
             {
                 var cell = grid.Columns[point.x][point.y];
-                grid.Events.Enqueue(new RemoveEvent(point));
+                grid.Events.Enqueue(new RemoveEvent(point, cell.Type));
                 cells.Add(grid.Columns[point.x][point.y]);
             }
 

@@ -12,11 +12,6 @@ namespace MatchingGame
         [SerializeField] private RectTransform parentTransform;
         [SerializeField] private GameObject basicBlock;
         [SerializeField] private GameObject bombBlock;
-        [SerializeField] private Color32 yellow;
-        [SerializeField] private Color32 red;
-        [SerializeField] private Color32 blue;
-        [SerializeField] private Color32 green;
-        [SerializeField] private Color32 defaultColour;
         private List<List<GameObject>> columns = new List<List<GameObject>>();
         private Queue<GameObject> removeBuffer = new Queue<GameObject>();
 
@@ -98,23 +93,11 @@ namespace MatchingGame
         private GameObject ToBlock(BlockType blockType)
         {
             GameObject block = this.basicBlock;
-            Color32 colour = new Color32();
-
-            if (blockType == BlockType.Yellow)
-                colour = this.yellow;
-            else if (blockType == BlockType.Red)
-                colour = this.red;
-            else if (blockType == BlockType.Green)
-                colour = this.green;
-            else if (blockType == BlockType.Blue)
-                colour = this.blue;
-            else if (blockType == BlockType.Bomb)
-            {
-                colour = this.defaultColour;
-                block = bombBlock;
-            }
-            
+            Color32 colour = VisualOperation.ToColor(blockType);
             block.GetComponent<Image>().color = colour;
+
+            if (blockType == BlockType.Bomb)
+                block = this.bombBlock;
 
             return block;
         }

@@ -1,5 +1,6 @@
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace MatchingGame
 {
@@ -16,13 +17,18 @@ namespace MatchingGame
             this.visualGrid.Build(cellGrid);
             
             this.scoreManager = GetComponent<ScoreManager>();
-            this.scoreManager.Moves = Random.Range(10, 20);
+            this.scoreManager.Moves = Random.Range(8, 12);
             this.scoreManager.ObjectiveType = (BlockType)Random.Range(0, 3);
-            this.scoreManager.ObjectiveCount = Random.Range(20, 25);
+            this.scoreManager.ObjectiveCount = Random.Range(25, 30);
         }
 
         private void Update()
         {
+            if (scoreManager.ObjectiveCount <= 0)
+                SceneManager.LoadScene("GameWon", LoadSceneMode.Single);
+            else if (scoreManager.Moves <= 0)
+                SceneManager.LoadScene("GameOver", LoadSceneMode.Single);
+
             var interaction = controls.GetInteraction();
 
             if (interaction != null && cellGrid.Events.Count == 0)

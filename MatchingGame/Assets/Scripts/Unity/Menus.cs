@@ -1,8 +1,9 @@
-﻿using UnityEngine.SceneManagement;
+﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace MatchingGame
 {
-    public class Menus
+    public class Menus : MonoBehaviour
     {
         public void LoadMainMenu()
         {

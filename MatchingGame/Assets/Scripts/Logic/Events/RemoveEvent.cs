@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using UnityEngine;
 
 namespace MatchingGame
@@ -7,13 +5,11 @@ namespace MatchingGame
     public class RemoveEvent : IGridEvent
     {
         private Point position;
-        private BlockType blockType;
 
         public RemoveEvent(Point position, BlockType type)
         {
             Debug.Assert(position.x >= 0 && position.y >= 0, "The position values need to be 0 or higher.");
             this.position = position;
-            this.blockType = type;
         }
 
         public void Process(CellGrid cellGrid, VisualGrid visualGrid)

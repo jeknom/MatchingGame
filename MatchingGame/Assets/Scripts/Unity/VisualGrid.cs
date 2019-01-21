@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -83,9 +82,10 @@ namespace MatchingGame
 
                 var containingColumn = columnQuery.Single();
                 var columnX = this.columns.IndexOf(containingColumn);
-                var columnY = containingColumn.IndexOf(block);
                 
-                Destroy(this.columns[columnX][columnY]);
+                block.GetComponent<Animator>().SetTrigger("OnDestroy");
+                Destroy(block.GetComponent<BoxCollider>());
+                Destroy(block, .2f);
                 this.columns[columnX].Remove(block);
             }
         }

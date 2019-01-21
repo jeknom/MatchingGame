@@ -745,25 +745,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e837a27b075283439a6003438c31163, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cascadeSpeed: 15
+  cascadeSpeed: 12.5
   parentTransform: {fileID: 594181177}
   basicBlock: {fileID: 1036430746746016, guid: 2cdfda9493bbf1f459468b203aadbaea, type: 3}
   bombBlock: {fileID: 1453262822159956, guid: a36e4a38ee57140999a82b3ab195aca2, type: 3}
-  yellow:
-    serializedVersion: 2
-    rgba: 4278253567
-  red:
-    serializedVersion: 2
-    rgba: 4278194687
-  blue:
-    serializedVersion: 2
-    rgba: 4294939392
-  green:
-    serializedVersion: 2
-    rgba: 4278386432
-  defaultColour:
-    serializedVersion: 2
-    rgba: 4294967295
 --- !u!4 &1287860120
 Transform:
   m_ObjectHideFlags: 0

@@ -12,8 +12,9 @@ GameObject:
   - component: {fileID: 4535962622258336225}
   - component: {fileID: 2426034278565236486}
   - component: {fileID: 7608345010431433527}
+  - component: {fileID: 7946704772461742081}
   m_Layer: 0
-  m_Name: BlackBomb
+  m_Name: BombBlock
   m_TagString: BlackBomb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -88,3 +89,22 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 100, y: 100, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!95 &7946704772461742081
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1453262822159956}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 63c959e5b8ec4d24994e33d1fbc91f12, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0

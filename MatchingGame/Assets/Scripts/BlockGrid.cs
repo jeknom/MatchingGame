@@ -1,18 +1,27 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class BlockGrid : MonoBehaviour
+namespace Match
 {
-    // Start is called before the first frame update
-    void Start()
+    public class BlockGrid
     {
-        
-    }
+        private List<Block> blocks = new List<Block>();
+        private int width;
+        private int height;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        public List<Block> Blocks { get { return this.blocks; } set { this.blocks = value; } }
+        public int Width { get { return this.width; } }
+        public int Height { get { return this.height; } }
+
+        public BlockGrid(int width, int height)
+        {
+            this.width = width;
+            this.height = height;
+
+            for (var i = 0; i < this.width * this.height; i++)
+            {
+                this.Blocks.Add(new Block { IsUndefined = true });
+            }
+        }
     }
 }

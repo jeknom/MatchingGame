@@ -13,7 +13,7 @@ namespace Match
         [SerializeField] private GameObject greenBlock;
         [SerializeField] private GameObject yellowBlock;
 
-        private void Start()
+        private async void Start()
         {
             blockGrid.Blocks = Utils.DefineBlockGrid(blockGrid);
 
@@ -25,11 +25,8 @@ namespace Match
                 blockAssetTransform.localScale = Settings.BlockSize;
                 this.blockAssets.Add(blockAsset);
             }
-        }
 
-        private void Update()
-        {
-            InstantCascade();
+            await Cascade();
         }
 
         public void InstantCascade()
@@ -41,6 +38,40 @@ namespace Match
                     var destination = new Vector3(x * Settings.GridGapSize, y * Settings.GridGapSize);
                     this.blockAssets[index].GetComponent<RectTransform>().localPosition = destination;
                 }
+        }
+
+        public async Task Cascade()
+        {
+            var blocks = new List<Task>();
+
+            for (var x = 0; x < this.blockGrid.Width; x++)
+                for (var y = 0; y < this.blockGrid.Height; y++)
+                {
+                    var index = Utils.ToIndex(x, y, this.blockGrid.Width);
+                    var rectTransform = blockAssets[index].GetComponent<RectTransform>();
+                    var start = rectTransform.localPosition;
+                    var end = new Vector3(x * Settings.GridGapSize, y * Settings.GridGapSize);
+                    var startTime = Time.time;
+                    var journeyLength = Vector3.Distance(start, end);
+                    var moveTask = Move(rectTransform, start, end, Settings.CascadeSpeed, Time.time, journeyLength);
+
+                    blocks.Add(moveTask);
+                }
+
+            await Task.WhenAll(blocks);
+        }
+
+        public async Task Move(RectTransform rectTransform, Vector3 start, Vector3 end, float speed, float startTime, float journeyLength)
+        {
+            while (rectTransform.localPosition != end)
+            {
+                var distanceCovered = (Time.time - startTime) * speed;
+                var fracJourney = distanceCovered / journeyLength;
+
+                rectTransform.localPosition = Vector3.Lerp(start, end, fracJourney);
+
+                await Task.Delay(Settings.MoveDelay);
+            }
         }
 
         public GameObject ToAsset(Block block)

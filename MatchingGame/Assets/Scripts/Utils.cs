@@ -1,14 +1,8 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
-
-namespace Match
+﻿public class Utils
 {
-    public static class Utils
+    public struct Point
     {
-        public struct Point
-        {
-            public int x;
-            public int y;
-        }
+        public int x;
+        public int y;
     }
 }

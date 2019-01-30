@@ -5,23 +5,21 @@
         public enum Color
         {
             None,
-            Red,
             Blue,
-            Green,
             Yellow,
+            Green,
+            Red
         }
 
-        public enum BombType
+        public enum Bomb
         {
             None,
             Area,
             Horizontal,
-            Vertical,
-            Xbomb
+            Vertical
         }
 
-        public Color colorType;
-        public BombType bombType;
-        public bool IsUndefined;
+        public Color BlockColor;
+        public Bomb BombType;
     }
 }

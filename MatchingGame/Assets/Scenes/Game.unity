@@ -1063,14 +1063,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8395a2994c123f4483f19dda7bf34b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  redBlock: {fileID: 6347224832451482576, guid: dcb6db79701a9134a95d11f10c2a8eb6,
-    type: 3}
-  blueBlock: {fileID: 3444081625180799555, guid: 0f18e2dbe13860a4e96ab85f0200c592,
-    type: 3}
-  greenBlock: {fileID: 3023127199949709849, guid: bc225b50501b9cb4a9e5591aee95c33d,
-    type: 3}
-  yellowBlock: {fileID: 5834482100093715665, guid: fbf4be9459e96af4cb6c90ebf374e230,
-    type: 3}
 --- !u!1 &1332705927
 GameObject:
   m_ObjectHideFlags: 0

@@ -16,7 +16,6 @@ namespace MatchView
         public async Task Sync(List<Model.Event> events)
         {
             var removedAssets = new List<GameObject>();
-
             foreach (var blockEvent in events)
             {
                 if (blockEvent.type == Model.Event.Type.Remove)
@@ -33,9 +32,7 @@ namespace MatchView
             }
 
             foreach (var asset in removedAssets)
-                foreach (var column in this.assets)
-                    if (column.Contains(asset))
-                        column.Remove(asset);
+                Destroy(asset);
 
             var moveTasks = new List<Task>();
             foreach (var column in this.assets)

@@ -994,6 +994,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1287860120}
+  - component: {fileID: 1287860121}
+  - component: {fileID: 1287860119}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: GameManager
@@ -1001,6 +1003,27 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &1287860119
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1287860118}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 278efee9cd8a0e2439f0267446e31af9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canvas: {fileID: 1305671624}
+  redBlock: {fileID: 6347224832451482576, guid: dcb6db79701a9134a95d11f10c2a8eb6,
+    type: 3}
+  blueBlock: {fileID: 3444081625180799555, guid: 0f18e2dbe13860a4e96ab85f0200c592,
+    type: 3}
+  greenBlock: {fileID: 3023127199949709849, guid: bc225b50501b9cb4a9e5591aee95c33d,
+    type: 3}
+  yellowBlock: {fileID: 5834482100093715665, guid: fbf4be9459e96af4cb6c90ebf374e230,
+    type: 3}
 --- !u!4 &1287860120
 Transform:
   m_ObjectHideFlags: 0
@@ -1015,6 +1038,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1287860121
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1287860118}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 675319903c899a8449501eb379497269, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1305671623
 GameObject:
   m_ObjectHideFlags: 0
@@ -1024,7 +1059,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1305671624}
-  - component: {fileID: 1305671625}
   m_Layer: 5
   m_Name: Grid
   m_TagString: Untagged
@@ -1051,18 +1085,6 @@ RectTransform:
   m_AnchoredPosition: {x: -300, y: -800}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1305671625
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1305671623}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a8395a2994c123f4483f19dda7bf34b1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1332705927
 GameObject:
   m_ObjectHideFlags: 0

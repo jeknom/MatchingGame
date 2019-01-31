@@ -1,5 +1,6 @@
 ﻿using MatchModel;
 using System.Threading.Tasks;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,16 +9,21 @@ namespace MatchView
     public class View : MonoBehaviour
     {
         private List<List<GameObject>> assets = new List<List<GameObject>>();
-        [SerializeField] GameObject redBlock;
-        [SerializeField] GameObject blueBlock;
-        [SerializeField] GameObject greenBlock;
-        [SerializeField] GameObject yellowBlock;
+        [SerializeField] private RectTransform canvas;
+        [SerializeField] private GameObject redBlock;
+        [SerializeField] private GameObject blueBlock;
+        [SerializeField] private GameObject greenBlock;
+        [SerializeField] private GameObject yellowBlock;
+        [SerializeField] private float tweenSpeed = 300f;
+        [SerializeField] private float assetSpacing = 110f;
 
-        public async Task Sync(List<Model.Event> events)
+        public void Sync(Queue<Model.Event> events)
         {
             var removedAssets = new List<GameObject>();
-            foreach (var blockEvent in events)
+            while (events.Count > 0)
             {
+                var blockEvent = events.Dequeue();
+
                 if (blockEvent.type == Model.Event.Type.Remove)
                 {
                     var asset = this.assets[blockEvent.position.x][blockEvent.position.y];
@@ -27,8 +33,11 @@ namespace MatchView
                 else if (blockEvent.type == Model.Event.Type.Add)
                 {
                     var asset = Instantiate(ToAsset(blockEvent.block));
+                    asset.GetComponent<RectTransform>().SetParent(this.canvas.GetComponent<RectTransform>(), false);
                     this.assets[blockEvent.position.x].Add(asset);
                 }
+                else if (blockEvent.type == Model.Event.Type.Init)
+                    this.assets.Add(new List<GameObject>());
             }
 
             foreach (var asset in removedAssets)
@@ -39,31 +48,37 @@ namespace MatchView
                 foreach (var asset in column)
                 {
                     var rectTransform = asset.GetComponent<RectTransform>();
-                    var destination = new Vector3(this.assets.IndexOf(column), column.IndexOf(asset));
+                    var startPosition = new Vector3(this.assets.IndexOf(column) * this.assetSpacing, 9f * this.assetSpacing);
+                    var destination = new Vector3(this.assets.IndexOf(column) * this.assetSpacing, column.IndexOf(asset) * this.assetSpacing);
 
                     if (rectTransform.localPosition != destination)
-                        moveTasks.Add(MoveBlock(rectTransform, destination));
+                        StartCoroutine(MoveBlock(rectTransform, startPosition, destination));
                 }
-
-            await Task.WhenAll(moveTasks);
         }
 
-        private async Task MoveBlock(RectTransform rectTransform, Vector3 destination)
+        private IEnumerator MoveBlock(RectTransform rectTransform, Vector3 startPosition, Vector3 destination)
         {
             var startTime = Time.time;
-            var startPosition = rectTransform.localPosition;
             var journeyLength = Vector3.Distance(startPosition, destination);
-            var speed = 10f;
 
             while (rectTransform.localPosition != destination)
             {
-                var distanceCovered = (Time.time - startTime) * speed;
+                var distanceCovered = (Time.time - startTime) * this.tweenSpeed;
                 var distanceCompletion = distanceCovered / journeyLength;
                 rectTransform.localPosition = Vector3.Lerp(startPosition, destination, distanceCompletion);
 
-                await Task.Delay(1);
+                yield return null;
             }
         }
+
+        /*public bool IsMoving()
+        {
+            foreach (var column in this.assets)
+                foreach (var asset in column)
+                {
+                    var destination = new Vector3(this.assets.IndexOf(column) * this.assetSpacing, column.IndexOf(asset) * this.assetSpacing);
+                }
+        }*/
 
         private GameObject ToAsset(Block block)
         {
@@ -90,7 +105,7 @@ namespace MatchView
                     return new Utils.Point { x = assetX, y = assetY };
                 }
 
-            throw new System.ArgumentException("The view does not contain the given blockAsset.");
+            throw new System.ArgumentException("The view does not contain the given asset.");
         }
     }
 }

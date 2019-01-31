@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace MatchModel
@@ -9,7 +8,9 @@ namespace MatchModel
         public readonly int width;
         public readonly int height;
         private List<List<Block>> blocks = new List<List<Block>>();
-        private List<Event> events = new List<Event>();
+        private Queue<Event> events = new Queue<Event>();
+
+        public Queue<Event> Events { get { return this.events; } }
 
         public Model(int width, int height)
         {
@@ -17,14 +18,17 @@ namespace MatchModel
             this.height = height;
 
             for (var i = 0; i < this.width; i++)
+            {
                 blocks.Add(new List<Block>());
+                events.Enqueue(new Event { type = Event.Type.Init });
+            }
 
             Fill();
         }
 
         public void SetInput(Utils.Point point)
         {
-            Debug.Assert(events.Count == 0, "Output needs to be taken before setting input.");
+            Debug.Assert(this.events.Count == 0, "Events need to be cleared before setting input.");
 
             var block = this.blocks[point.x][point.y];
 
@@ -35,22 +39,16 @@ namespace MatchModel
             Fill();
         }
 
-        public List<Event> GetOutput()
+        public void Fill()
         {
-            var changes = this.events;
-            this.events.Clear();
+            var random = new System.Random();
 
-            return changes;
-        }
-
-        private void Fill()
-        {
             foreach (var column in this.blocks)
                 while (column.Count < this.height)
                 {
                     var randomizedBlock = new Block
                     {
-                        color = (Block.Color)Random.Range(1, 4),
+                        color = (Block.Color)random.Next(1, 4),
                         bomb = Block.Bomb.Undefined
                     };
                     column.Add(randomizedBlock);
@@ -65,7 +63,7 @@ namespace MatchModel
                             y = column.Count - 1
                         }
                     };
-                    events.Add(addEvent);
+                    this.events.Enqueue(addEvent);
                 }
         }
 
@@ -83,7 +81,7 @@ namespace MatchModel
                             y = column.IndexOf(block)
                         }
                     };
-                    events.Add(removeEvent);
+                    this.events.Enqueue(removeEvent);
 
                     if (block.Equals(new Block()))
                         column.Remove(block);
@@ -94,6 +92,7 @@ namespace MatchModel
         {
             public enum Type
             {
+                Init,
                 Add,
                 Remove
             }

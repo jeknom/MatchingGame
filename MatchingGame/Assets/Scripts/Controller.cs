@@ -2,36 +2,39 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Controller : MonoBehaviour
+namespace MatchController
 {
-    private bool IsControllable = true;
-    private Model model = new Model(6, 8);
-    private View view;
-
-    private void Start()
+    public class Controller : MonoBehaviour
     {
-        this.view = GetComponent<View>();
-    }
+        private bool IsControllable = true;
+        private MatchModel.Model model = new Model(6, 8);
+        private View view;
 
-    private void Update()
-    {
-        var input = GetInput();
-
-        if (IsControllable && input != null)
+        private void Start()
         {
-            this.IsControllable = false;
-            this.model.SetInput(view.ToPoint(input));
+            this.view = GetComponent<View>();
         }
-    }
 
-    private GameObject GetInput()
-    {
-        RaycastHit hit;
-        var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        private void Update()
+        {
+            var input = GetInput();
 
-        if (Input.GetMouseButtonUp(0) && Physics.Raycast(ray, out hit))
-            return hit.collider.gameObject;
-        else
-            return null;
+            if (IsControllable && input != null)
+            {
+                this.IsControllable = false;
+                this.model.SetInput(view.ToPoint(input));
+            }
+        }
+
+        private GameObject GetInput()
+        {
+            RaycastHit hit;
+            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            if (Input.GetMouseButtonUp(0) && Physics.Raycast(ray, out hit))
+                return hit.collider.gameObject;
+            else
+                return null;
+        }
     }
 }

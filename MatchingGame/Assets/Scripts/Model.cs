@@ -70,22 +70,25 @@ namespace MatchModel
         private void RemoveUndefined()
         {
             foreach (var column in this.blocks)
+            {
                 foreach (var block in column)
-                {
-                    var removeEvent = new Event
-                    {
-                        type = Event.Type.Remove,
-                        position = new Utils.Point
-                        {
-                            x = this.blocks.IndexOf(column),
-                            y = column.IndexOf(block)
-                        }
-                    };
-                    this.events.Enqueue(removeEvent);
-
                     if (block.Equals(new Block()))
-                        column.Remove(block);
-                }
+                    {
+                        var removeEvent = new Event
+                        {
+                            type = Event.Type.Remove,
+                            position = new Utils.Point
+                            {
+                                x = this.blocks.IndexOf(column),
+                                y = column.IndexOf(block)
+                            }
+                        };
+                        this.events.Enqueue(removeEvent);
+                    }
+
+                column.RemoveAll(b => b.Equals(new Block()));
+            }
+                
         }
 
         public struct Event

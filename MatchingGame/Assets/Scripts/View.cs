@@ -1,14 +1,15 @@
 ﻿using MatchModel;
-using System.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace MatchView
 {
     public class View : MonoBehaviour
     {
         private List<List<GameObject>> assets = new List<List<GameObject>>();
+        [SerializeField] private RectTransform backdrop;
         [SerializeField] private RectTransform canvas;
         [SerializeField] private GameObject redBlock;
         [SerializeField] private GameObject blueBlock;
@@ -19,7 +20,7 @@ namespace MatchView
 
         public void Sync(Queue<Model.Event> events)
         {
-            var removedAssets = new List<GameObject>();
+            var removedAssets = new Queue<GameObject>();
             while (events.Count > 0)
             {
                 var blockEvent = events.Dequeue();
@@ -27,12 +28,13 @@ namespace MatchView
                 if (blockEvent.type == Model.Event.Type.Remove)
                 {
                     var asset = this.assets[blockEvent.position.x][blockEvent.position.y];
-                    removedAssets.Add(asset);
+                    removedAssets.Enqueue(asset);
                     this.assets[blockEvent.position.x].Remove(asset);
                 }
                 else if (blockEvent.type == Model.Event.Type.Add)
                 {
-                    var asset = Instantiate(ToAsset(blockEvent.block));
+                    var startPosition = new Vector3(blockEvent.position.x * this.assetSpacing, 9f * this.assetSpacing);
+                    var asset = Instantiate(ToAsset(blockEvent.block), startPosition, Quaternion.identity);
                     asset.GetComponent<RectTransform>().SetParent(this.canvas.GetComponent<RectTransform>(), false);
                     this.assets[blockEvent.position.x].Add(asset);
                 }
@@ -43,42 +45,32 @@ namespace MatchView
             foreach (var asset in removedAssets)
                 Destroy(asset);
 
-            var moveTasks = new List<Task>();
             foreach (var column in this.assets)
                 foreach (var asset in column)
                 {
                     var rectTransform = asset.GetComponent<RectTransform>();
-                    var startPosition = new Vector3(this.assets.IndexOf(column) * this.assetSpacing, 9f * this.assetSpacing);
                     var destination = new Vector3(this.assets.IndexOf(column) * this.assetSpacing, column.IndexOf(asset) * this.assetSpacing);
 
                     if (rectTransform.localPosition != destination)
-                        StartCoroutine(MoveBlock(rectTransform, startPosition, destination));
+                        StartCoroutine(CascadeBlock(rectTransform, destination));
                 }
         }
 
-        private IEnumerator MoveBlock(RectTransform rectTransform, Vector3 startPosition, Vector3 destination)
+        private IEnumerator CascadeBlock(RectTransform rectTransform, Vector3 destination)
         {
             var startTime = Time.time;
-            var journeyLength = Vector3.Distance(startPosition, destination);
+            var startPosition = rectTransform.localPosition;
+            var journeyLength = Vector3.Distance(rectTransform.localPosition, destination);
 
             while (rectTransform.localPosition != destination)
             {
-                var distanceCovered = (Time.time - startTime) * this.tweenSpeed;
+                var distanceCovered = (Time.time - startTime) * this.tweenSpeed * 1000;
                 var distanceCompletion = distanceCovered / journeyLength;
                 rectTransform.localPosition = Vector3.Lerp(startPosition, destination, distanceCompletion);
 
                 yield return null;
             }
         }
-
-        /*public bool IsMoving()
-        {
-            foreach (var column in this.assets)
-                foreach (var asset in column)
-                {
-                    var destination = new Vector3(this.assets.IndexOf(column) * this.assetSpacing, column.IndexOf(asset) * this.assetSpacing);
-                }
-        }*/
 
         private GameObject ToAsset(Block block)
         {

@@ -12,12 +12,13 @@ namespace MatchController
         private void Start()
         {
             this.view = GetComponent<View>();
+            this.view.SyncGridScale(this.model.width, this.model.height);
         }
 
         private void Update()
         {
             var input = GetInput();
-            if (input != null)
+            if (input != null && !this.view.IsCascading(this.model.width, this.model.height))
             {
                 StopAllCoroutines();
                 this.model.SetInput(view.ToPoint(input));
@@ -26,7 +27,7 @@ namespace MatchController
             var events = this.model.Events;
             if (events.Count > 0)
             {
-                this.view.Sync(events);
+                this.view.Sync(events, this.model.width, this.model.height);
                 this.model.Events.Clear();
             }
         }

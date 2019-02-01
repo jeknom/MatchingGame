@@ -48,7 +48,7 @@ namespace MatchModel
                 {
                     var randomizedBlock = new Block
                     {
-                        color = (Block.Color)random.Next(1, 4),
+                        color = (Block.Color)random.Next(1, 5),
                         bomb = Block.Bomb.Undefined
                     };
                     column.Add(randomizedBlock);

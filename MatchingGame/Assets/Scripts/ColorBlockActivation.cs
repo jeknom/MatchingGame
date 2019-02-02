@@ -26,7 +26,7 @@ namespace MatchModel
 
                 if (this.blocks[target.x][target.y].color == this.blocks[position.x][position.y].color && !nullingList.Contains(target))
                 {
-                    var validSurroundingPositions = Utils.GetValidSurrounding(target, 6, 8, false);
+                    var validSurroundingPositions = Utils.GetValidSurrounding(target, this.blocks.Count, this.blocks[0].Count, false);
 
                     foreach (var point in validSurroundingPositions)
                         if (!queue.Contains(point))
@@ -36,8 +36,9 @@ namespace MatchModel
                 }
             }
 
-            foreach (var point in nullingList)
-                this.blocks[point.x][point.y] = new Block();
+            if (nullingList.Count >= 2)
+                foreach (var point in nullingList)
+                    this.blocks[point.x][point.y] = new Block();
 
             return this.blocks;
         }

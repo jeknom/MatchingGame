@@ -85,7 +85,6 @@ namespace MatchModel
                         };
                         this.events.Enqueue(removeEvent);
                     }
-
                 column.RemoveAll(b => b.Equals(new Block()));
             }
                 

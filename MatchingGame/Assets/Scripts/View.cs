@@ -8,11 +8,11 @@ namespace MatchView
     public class View : MonoBehaviour
     {
         private List<List<GameObject>> assets = new List<List<GameObject>>();
-        [SerializeField] private RectTransform grid;
-        [SerializeField] private GameObject redBlock;
-        [SerializeField] private GameObject blueBlock;
-        [SerializeField] private GameObject greenBlock;
-        [SerializeField] private GameObject yellowBlock;
+        [SerializeField] private RectTransform grid = null;
+        [SerializeField] private GameObject redBlock = null;
+        [SerializeField] private GameObject blueBlock = null;
+        [SerializeField] private GameObject greenBlock = null;
+        [SerializeField] private GameObject yellowBlock = null;
         [SerializeField] private float tweenSpeed = 300f;
         [SerializeField] private float assetSpacing = 110f;
 
@@ -44,7 +44,7 @@ namespace MatchView
 
         public void Sync(Queue<Model.Event> events, float width, float height)
         {
-            var removedAssets = new Queue<GameObject>();
+            var removedAssets = new List<GameObject>();
             while (events.Count > 0)
             {
                 var blockEvent = events.Dequeue();
@@ -53,7 +53,7 @@ namespace MatchView
                 {
                     var asset = this.assets[blockEvent.position.x][blockEvent.position.y];
                     Destroy(asset.GetComponent<BoxCollider>());
-                    removedAssets.Enqueue(asset);
+                    removedAssets.Add(asset);
                     this.assets[blockEvent.position.x].Remove(asset);
                 }
                 else if (blockEvent.type == Model.Event.Type.Add)
@@ -67,13 +67,17 @@ namespace MatchView
                     this.assets.Add(new List<GameObject>());
             }
 
-            while (removedAssets.Count > 0)
+            foreach (var removedAsset in removedAssets)
             {
-                var removedAsset = removedAssets.Dequeue();
                 if (removedAsset.GetComponent<Animator>())
                     removedAsset.GetComponent<Animator>().SetTrigger("OnCollect");
 
                 Destroy(removedAsset, 0.25f);
+
+                foreach (var column in this.assets)
+                    foreach (var asset in column)
+                        if (column.Contains(removedAsset))
+                            column.Remove(removedAsset);
             }
 
             foreach (var column in this.assets)

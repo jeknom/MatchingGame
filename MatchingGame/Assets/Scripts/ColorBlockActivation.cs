@@ -8,16 +8,37 @@ namespace MatchModel
         private Utils.Point position;
         private readonly Block.Color color;
 
-        public ColorBlockActivation(List<List<Block>> blocks, Utils.Point position, Block.Color color)
+        public ColorBlockActivation(List<List<Block>> blocks, Utils.Point position)
         {
             this.blocks = blocks;
             this.position = position;
-            this.color = color;
         }
 
         public List<List<Block>> Activate()
         {
-            this.blocks[position.x][position.y] = new Block();
+            var queue = new Queue<Utils.Point>();
+            var nullingList = new List<Utils.Point>();
+            queue.Enqueue(this.position);
+
+            while (queue.Count > 0)
+            {
+                var target = queue.Dequeue();
+
+                if (this.blocks[target.x][target.y].color == this.blocks[position.x][position.y].color && !nullingList.Contains(target))
+                {
+                    var validSurroundingPositions = Utils.GetValidSurrounding(target, 6, 8, false);
+
+                    foreach (var point in validSurroundingPositions)
+                        if (!queue.Contains(point))
+                            queue.Enqueue(point);
+                            
+                    nullingList.Add(target);
+                }
+            }
+
+            foreach (var point in nullingList)
+                this.blocks[point.x][point.y] = new Block();
+
             return this.blocks;
         }
     }

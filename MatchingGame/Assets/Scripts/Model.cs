@@ -33,7 +33,7 @@ namespace MatchModel
             var block = this.blocks[point.x][point.y];
 
             if (block.color != Block.Color.Undefined)
-                this.blocks = new ColorBlockActivation(this.blocks, point, block.color).Activate();
+                this.blocks = new ColorBlockActivation(this.blocks, point).Activate();
 
             RemoveUndefined();
             Fill();

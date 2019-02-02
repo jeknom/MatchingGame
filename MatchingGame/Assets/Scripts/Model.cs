@@ -22,8 +22,6 @@ namespace MatchModel
                 blocks.Add(new List<Block>());
                 events.Enqueue(new Event { type = Event.Type.Init });
             }
-
-            Fill();
         }
 
         public void SetInput(Utils.Point point)
@@ -41,14 +39,12 @@ namespace MatchModel
 
         public void Fill()
         {
-            var random = new System.Random();
-
             foreach (var column in this.blocks)
                 while (column.Count < this.height)
                 {
                     var randomizedBlock = new Block
                     {
-                        color = (Block.Color)random.Next(1, 5),
+                        color = (Block.Color)UnityEngine.Random.Range(1, 5),
                         bomb = Block.Bomb.Undefined
                     };
                     column.Add(randomizedBlock);

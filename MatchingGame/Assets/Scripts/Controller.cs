@@ -11,16 +11,17 @@ namespace MatchController
 
         private void Start()
         {
+            this.model.Fill();
             this.view = GetComponent<View>();
             this.view.SyncGridScale(this.model.width, this.model.height);
         }
 
         private void Update()
         {
+            // View and model are not syncing up correctly at the moment
             var input = GetInput();
-            if (input != null && !this.view.IsCascading(this.model.width, this.model.height))
+            if (input != null && !this.view.IsTweening)
             {
-                StopAllCoroutines();
                 this.model.SetInput(view.ToPoint(input));
             }
 

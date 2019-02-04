@@ -1,4 +1,5 @@
-﻿using MatchModel;
+﻿using System.Collections.Generic;
+using MatchModel;
 using MatchView;
 using UnityEngine;
 
@@ -11,26 +12,19 @@ namespace MatchController
 
         private void Start()
         {
-            this.model.Fill();
             this.view = GetComponent<View>();
-            this.view.SyncGridScale(this.model.width, this.model.height);
         }
 
         private void Update()
         {
-            // View and model are not syncing up correctly at the moment
             var input = GetInput();
-            if (input != null && !this.view.IsTweening)
-            {
-                this.model.SetInput(view.ToPoint(input));
-            }
+            var changes = this.model.Events;
 
-            var events = this.model.Events;
-            if (events.Count > 0)
-            {
-                this.view.Sync(events, this.model.width, this.model.height);
-                this.model.Events.Clear();
-            }
+            if (input != null && !this.view.IsSyncing)
+                this.model.SetInput(view.ToPoint(input));
+
+            if (changes.Count > 0)
+                this.view.Sync(changes, this.model.width, this.model.height);
         }
 
         private GameObject GetInput()

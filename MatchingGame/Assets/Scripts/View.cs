@@ -9,7 +9,7 @@ namespace MatchView
 {
     public class View : MonoBehaviour
     {
-        public bool IsTweening = false;
+        public bool IsSyncing = false;
         private List<List<GameObject>> assets = new List<List<GameObject>>();
         private GameObject undefinedAsset = null;
         [SerializeField] private RectTransform grid = null;
@@ -20,72 +20,65 @@ namespace MatchView
         [SerializeField] private float tweenSpeed = 300f;
         [SerializeField] private float assetSpacing = 110f;
 
-        public void SyncGridScale(float width, float height)
+        public void Sync(Queue<Model.Event> events, int width, int height)
         {
-            this.grid.sizeDelta = Vector3.Scale(this.grid.sizeDelta, new Vector3(width + 1.5f, height + 1.75f));
+            this.IsSyncing = true;
 
-            width = width - 1;
-            height = height - 1;
-            this.grid.localPosition = this.grid.localPosition;
-            this.grid.localPosition = this.grid.localPosition + new Vector3(width * (this.assetSpacing / 2), height * (this.assetSpacing / 2));
-        }
-
-        public async void Sync(Queue<Model.Event> events, float width, float height)
-        {
-            var removedAssets = new List<GameObject>();
-            while (events.Count > 0)
+            if (this.assets.Count < width)
             {
-                var blockEvent = events.Dequeue();
+                this.grid.sizeDelta = Vector3.Scale(this.grid.sizeDelta, new Vector3(width + 1.5f, height + 1.75f));
+                this.grid.localPosition = this.grid.localPosition;
+                this.grid.localPosition = this.grid.localPosition + new Vector3((width - 1) * (this.assetSpacing / 2), (height - 1) * (this.assetSpacing / 2));
 
-                if (blockEvent.type == Model.Event.Type.Remove)
-                {
-                    var asset = this.assets[blockEvent.position.x][blockEvent.position.y];
-                    Destroy(asset.GetComponent<BoxCollider>());
-                    removedAssets.Add(asset);
-                    this.assets[blockEvent.position.x].Remove(asset);
-                }
-                else if (blockEvent.type == Model.Event.Type.Add)
-                {
-                    var startPosition = new Vector3((blockEvent.position.x - (width - 1) / 2) * this.assetSpacing, 8f * this.assetSpacing);
-                    var asset = Instantiate(ToAsset(blockEvent.block), startPosition, Quaternion.identity);
-                    asset.GetComponent<RectTransform>().SetParent(this.grid.GetComponent<RectTransform>(), false);
-                    this.assets[blockEvent.position.x].Add(asset);
-                }
-                else if (blockEvent.type == Model.Event.Type.Init)
+                for (var x = 0; x < width; x++)
                     this.assets.Add(new List<GameObject>());
             }
 
-            foreach (var removedAsset in removedAssets)
+            var removedBlocks = new List<GameObject>();
+            while (events.Count > 0)
             {
-                if (removedAsset.GetComponent<Animator>())
-                    removedAsset.GetComponent<Animator>().SetTrigger("OnCollect");
+                var currentEvent = events.Dequeue();
 
-                Destroy(removedAsset, 0.25f);
+                if (currentEvent.type == Model.Event.Type.Add)
+                {
+                    var startPosition = new Vector3((currentEvent.position.x - width / 2 + .5f) * this.assetSpacing, 10f * this.assetSpacing);
+                    var asset = Instantiate(ToAsset(currentEvent.block), startPosition, Quaternion.identity);
 
-                foreach (var column in this.assets)
-                    foreach (var asset in column)
-                        if (column.Contains(removedAsset))
-                            column.Remove(removedAsset);
+                    asset.GetComponent<RectTransform>().SetParent(this.grid, false);
+                    this.assets[currentEvent.position.x].Add(asset);
+                }
+                else if (currentEvent.type == Model.Event.Type.Remove)
+                    removedBlocks.Add(this.assets[currentEvent.position.x][currentEvent.position.y]);
             }
+
+            foreach (var asset in removedBlocks)
+                foreach (var column in this.assets)
+                    if (column.Contains(asset))
+                    {
+                        if (asset.GetComponent<Animator>())
+                            asset.GetComponent<Animator>().SetTrigger("OnCollect");
+
+                        column.Remove(asset);
+                        Destroy(asset.GetComponent<BoxCollider>());
+                        Destroy(asset, 0.25f);
+                    }
 
             var tweeningTasks = new List<Task>();
             foreach (var column in this.assets)
                 foreach (var asset in column)
                 {
-                    var rectTransform = asset.GetComponent<RectTransform>();
-                    var x = (this.assets.IndexOf(column) - (width - 1) / 2) * this.assetSpacing;
-                    var y = (column.IndexOf(asset) - (height - 1) / 2) * this.assetSpacing;
-                    var destination = new Vector3(x, y);
-
-                    if (rectTransform.localPosition != destination)
-                        tweeningTasks.Add(CascadeBlock(rectTransform, destination));
+                    var x = this.assets.IndexOf(column);
+                    var y = column.IndexOf(asset);
+                    var destination = new Vector3((x - width / 2 + .5f) * this.assetSpacing, (column.IndexOf(asset) - height / 2 + .5f) * this.assetSpacing);
+                    var tweenTask = TweenAsset(this.assets[this.assets.IndexOf(column)][column.IndexOf(asset)].GetComponent<RectTransform>(), destination);
+                    tweeningTasks.Add(tweenTask);
                 }
-            this.IsTweening = true;
-            await Task.WhenAll(tweeningTasks);
-            this.IsTweening = false;
+
+            Task.WhenAll(tweeningTasks);
+            this.IsSyncing = false;
         }
 
-        private async Task CascadeBlock(RectTransform rectTransform, Vector3 destination)
+        private async Task TweenAsset(RectTransform rectTransform, Vector3 destination)
         {
 
             await Task.Delay(TimeSpan.FromSeconds(0.25f));
@@ -132,7 +125,7 @@ namespace MatchView
                     return new Utils.Point { x = assetX, y = assetY };
                 }
 
-            throw new System.ArgumentException("The view does not contain the given asset.");
+            throw new ArgumentException("The view does not contain the given asset.");
         }
     }
 }

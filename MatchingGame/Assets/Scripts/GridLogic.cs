@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
 
 namespace Match
 {
@@ -21,12 +19,6 @@ namespace Match
             }
         }
 
-        public struct Point
-        {
-            public int x;
-            public int y;
-        }
-
         public struct Change
         {
             public enum Type
@@ -36,7 +28,7 @@ namespace Match
             }
 
             public Type changeType;
-            public Point position;
+            public Utils.Point position;
             public Block block;
         }
 
@@ -55,7 +47,7 @@ namespace Match
                     var change = new Change
                     {
                         changeType = Change.Type.Add,
-                        position = new Point
+                        position = new Utils.Point
                         {
                             x = this.blocks.IndexOf(column),
                             y = column.Count
@@ -69,7 +61,13 @@ namespace Match
                 }
         }
 
-        private void Remove(List<Point> positions)
+        public void Activate(Utils.Point position)
+        {
+            var block = this.blocks[position.x][position.y];
+            block
+        }
+
+        private void Remove()
         {
             // Order matters, block is based on data prior the change.
             foreach (var position in positions)
@@ -90,7 +88,7 @@ namespace Match
         private Block RandomizedColorBlock()
         {
             var random = new System.Random();
-            return new Block { blockColor = (Block.Color)random.Next(1, 4) };
+            return new Block { blockColor = (Block.Color)random.Next(1, 4), blockLogic = new ColorActivation() };
         }
     }
 }

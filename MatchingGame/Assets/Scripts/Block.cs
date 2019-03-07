@@ -1,4 +1,6 @@
-﻿namespace Match
+﻿using System.Collections.Generic;
+
+namespace Match
 {
     public struct Block
     {
@@ -19,5 +21,6 @@
 
         public Color blockColor;
         public BombType bombType;
+        public IBlockLogic blockLogic;
     }
 }

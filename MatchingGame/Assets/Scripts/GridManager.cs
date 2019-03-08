@@ -20,9 +20,21 @@ namespace Match
 
         private void Update()
         {
-            
             if (!IsCascading())
             {
+                var input = GetInput();
+                
+                if (input)
+                {
+                    foreach (var column in assets)
+                        if (column.Contains(input))
+                            this.logic.ActivateBlock(new Utils.Point
+                            {
+                                x = this.assets.IndexOf(column),
+                                y = column.IndexOf(input),
+                            });
+                }
+
                 this.logic.Morph();
                 var changeQueue = this.logic.Changes;
                 var removedAssets = new List<GameObject>();
@@ -47,13 +59,25 @@ namespace Match
             Cascade();
         }
 
+        private GameObject GetInput()
+        {
+            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            if (Input.GetMouseButtonUp(0) && Physics.Raycast(ray, out RaycastHit hit))
+            {
+                Debug.Log("here");
+                return hit.collider.gameObject;
+            }
+            else
+                return null;
+        }
+
         private void Cascade()
         {
             if (!IsCascading() || !this.IsInitialized)
                 foreach (var column in this.assets)
                     foreach (var asset in column)
                     {
-                        asset.transform.localPosition = new Vector3(this.assets.IndexOf(column) * .6f, 8f);
                         StartCoroutine(Move(asset, new Vector3(this.assets.IndexOf(column) * .6f, column.IndexOf(asset) * .6f)));
                     }
 
@@ -64,7 +88,7 @@ namespace Match
         {
             foreach (var column in this.assets)
                 foreach (var asset in column)
-                    if (asset.transform.localPosition != new Vector3(this.assets.IndexOf(column), column.IndexOf(asset)))
+                    if (asset.transform.localPosition != new Vector3(this.assets.IndexOf(column) * .6f, column.IndexOf(asset) * .6f))
                         return true;
 
             return false;

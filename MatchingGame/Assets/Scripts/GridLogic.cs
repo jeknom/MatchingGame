@@ -37,11 +37,31 @@ namespace Match
                 this.blocks.Add(new List<Block>());
         }
 
+        public void ActivateBlock(Utils.Point target)
+        {
+            this.blocks = this.blocks[target.x][target.y].blockLogic.Activate(this.blocks, target);
+        }
+
         public void Morph()
         {
             // Remove all blocks with default values.
             foreach (var column in this.blocks)
+            {
+                foreach (var block in column)
+                    if (block.Equals(new Block()))
+                        this.changes.Enqueue(new Change
+                        {
+                            type = Change.Type.Remove,
+                            position = new Utils.Point
+                            {
+                                x = this.blocks.IndexOf(column),
+                                y = column.IndexOf(block),
+                            },
+                            block = block,
+                        });
+
                 column.RemoveAll(b => b.Equals(new Block()));
+            }
 
             foreach (var column in this.blocks)
                 while (column.Count < Settings.GridHeight)

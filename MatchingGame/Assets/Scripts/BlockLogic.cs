@@ -4,12 +4,12 @@ namespace Match
 {
     public interface IBlockLogic
     {
-        List<List<Block>> Activation(List<List<Block>> blocks, Utils.Point position);
+        List<List<Block>> Activate(List<List<Block>> blocks, Utils.Point position);
     }
 
     public class ColorActivation : IBlockLogic
     {
-        public List<List<Block>> Activation(List<List<Block>> blocks, Utils.Point activatedPosition)
+        public List<List<Block>> Activate(List<List<Block>> blocks, Utils.Point activatedPosition)
         {
             var queue = new Queue<Utils.Point>();
             var matchingBlocks = new List<Utils.Point>();

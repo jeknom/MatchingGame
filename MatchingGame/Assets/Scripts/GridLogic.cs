@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using UnityEngine;
+using System.Collections.Generic;
 
 namespace Match
 {
     public class GridLogic
     {
-        const int GridWidth = 8;
-        const int GridHeight = 10;
         private List<List<Block>> blocks = new List<List<Block>>();
         private Queue<Change> changes = new Queue<Change>();
 
@@ -27,26 +26,30 @@ namespace Match
                 Remove
             }
 
-            public Type changeType;
+            public Type type;
             public Utils.Point position;
             public Block block;
         }
 
         public GridLogic()
         {
-            while (this.blocks.Count < GridWidth)
+            while (this.blocks.Count < Settings.GridWidth)
                 this.blocks.Add(new List<Block>());
         }
 
-        private void Fill()
+        public void Morph()
         {
+            // Remove all blocks with default values.
             foreach (var column in this.blocks)
-                while (column.Count < GridHeight)
+                column.RemoveAll(b => b.Equals(new Block()));
+
+            foreach (var column in this.blocks)
+                while (column.Count < Settings.GridHeight)
                 {
                     var randomBlock = RandomizedColorBlock();
                     var change = new Change
                     {
-                        changeType = Change.Type.Add,
+                        type = Change.Type.Add,
                         position = new Utils.Point
                         {
                             x = this.blocks.IndexOf(column),
@@ -61,34 +64,9 @@ namespace Match
                 }
         }
 
-        public void Activate(Utils.Point position)
-        {
-            var block = this.blocks[position.x][position.y];
-            block
-        }
-
-        private void Remove()
-        {
-            // Order matters, block is based on data prior the change.
-            foreach (var position in positions)
-            {
-                this.changes.Enqueue(new Change
-                {
-                    changeType = Change.Type.Remove,
-                    position = position,
-                    block = this.blocks[position.x][position.y]
-                });
-                this.blocks[position.x][position.y] = new Block();
-            }
-
-            foreach (var column in this.blocks)
-                column.RemoveAll(b => b.Equals(new Block()));
-        }
-
         private Block RandomizedColorBlock()
         {
-            var random = new System.Random();
-            return new Block { blockColor = (Block.Color)random.Next(1, 4), blockLogic = new ColorActivation() };
+            return new Block { blockColor = (Block.Color)Random.Range(1, 5), blockLogic = new ColorActivation() };
         }
     }
 }

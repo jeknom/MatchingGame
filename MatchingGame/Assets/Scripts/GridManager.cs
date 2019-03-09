@@ -26,37 +26,48 @@ namespace Match
                 
                 if (input)
                 {
-                    foreach (var column in assets)
-                        if (column.Contains(input))
-                            this.logic.ActivateBlock(new Utils.Point
-                            {
-                                x = this.assets.IndexOf(column),
-                                y = column.IndexOf(input),
-                            });
+                    var target = Utils.ToPoint(input, this.assets);
+                    this.logic.ActivateBlock(target);
                 }
+            }
 
-                this.logic.Morph();
-                var changeQueue = this.logic.Changes;
-                var removedAssets = new List<GameObject>();
+            this.logic.Morph();
+            var changeQueue = this.logic.Changes;
+            foreach (var change in changeQueue)
+                Debug.Log(change.type);
 
+            if (changeQueue.Count > 0)
+            {
+                var destroyed = new List<GameObject>();
                 foreach (var change in changeQueue)
                     if (change.type == GridLogic.Change.Type.Remove)
-                        removedAssets.Add(this.assets[change.position.x][change.position.y]);
+                    {
+                        var current = this.assets[change.position.x][change.position.y];
+                        destroyed.Add(current);
+                        this.assets[change.position.x].Remove(current);
+                    }
 
-                foreach (var removedAsset in removedAssets)
-                    foreach (var column in this.assets)
-                        column.Remove(removedAsset);
-
+                foreach (var asset in destroyed)
+                    Destroy(asset);
 
                 while (changeQueue.Count > 0)
                 {
                     var change = changeQueue.Dequeue();
                     if (change.type == GridLogic.Change.Type.Add)
-                        this.assets[change.position.x].Add(Instantiate(ToGameObject(change.block), this.grid.transform));
+                    {
+                        var newAsset = Instantiate(ToGameObject(change.block), this.grid.transform);
+                        newAsset.transform.localPosition = new Vector3(change.position.x * .6f, 6f);
+                        this.assets[change.position.x].Add(newAsset);
+                    }
                 }
-            }
 
-            Cascade();
+                foreach (var column in this.assets)
+                    foreach (var asset in column)
+                    {
+                        var point = Utils.ToPoint(asset, this.assets);
+                        StartCoroutine(Move(asset, new Vector3(point.x * .6f, point.y * .6f)));
+                    }
+            }
         }
 
         private GameObject GetInput()
@@ -64,24 +75,9 @@ namespace Match
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
             if (Input.GetMouseButtonUp(0) && Physics.Raycast(ray, out RaycastHit hit))
-            {
-                Debug.Log("here");
                 return hit.collider.gameObject;
-            }
             else
                 return null;
-        }
-
-        private void Cascade()
-        {
-            if (!IsCascading() || !this.IsInitialized)
-                foreach (var column in this.assets)
-                    foreach (var asset in column)
-                    {
-                        StartCoroutine(Move(asset, new Vector3(this.assets.IndexOf(column) * .6f, column.IndexOf(asset) * .6f)));
-                    }
-
-            this.IsInitialized = true;
         }
 
         private bool IsCascading()
@@ -102,7 +98,7 @@ namespace Match
 
             while (asset.transform.localPosition != position)
             {
-                var distanceCovered = (Time.time - startTime) * 3f;
+                var distanceCovered = (Time.time - startTime) * 5f;
                 var distanceCompletion = distanceCovered / journeyLength;
                 asset.transform.localPosition = Vector3.Lerp(startPosition, position, distanceCompletion);
 

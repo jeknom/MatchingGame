@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Match
 {
@@ -9,31 +10,37 @@ namespace Match
 
     public class ColorActivation : IBlockLogic
     {
-        public List<List<Block>> Activate(List<List<Block>> blocks, Utils.Point activatedPosition)
+        public List<List<Block>> Activate(List<List<Block>> blocks, Utils.Point target)
         {
+            var blocksCopy = new List<List<Block>>(blocks);
             var queue = new Queue<Utils.Point>();
-            var matchingBlocks = new List<Utils.Point>();
-            queue.Enqueue(activatedPosition);
+            var correspondingPoints = new List<Utils.Point>();
+            var targetColor = blocksCopy[target.x][target.y].blockColor;
+            queue.Enqueue(target);
 
             while (queue.Count > 0)
             {
                 var current = queue.Dequeue();
+                var currentColor = blocksCopy[current.x][current.y].blockColor;
 
-                if(!matchingBlocks.Contains(current))
+                if (!correspondingPoints.Contains(current) && currentColor == targetColor)
                 {
-                    matchingBlocks.Add(current);
-
-                    foreach (var position in Utils.SurroundingPositions(current, false))
-                        if (Utils.IsValidPosition(position, blocks.Count, blocks[0].Count)
-                            && blocks[activatedPosition.x][activatedPosition.y].blockColor == blocks[current.x][current.y].blockColor)
-                                queue.Enqueue(position);
+                    correspondingPoints.Add(current);
+                    var surroundingPoints = Utils.SurroundingPositions(current, false);
+                    foreach (var point in surroundingPoints)
+                        if (Utils.IsValidPosition(point, Settings.GridWidth, Settings.GridHeight))
+                            queue.Enqueue(point);
                 }
             }
 
-            foreach (var point in matchingBlocks)
-                blocks[point.x][point.y] = new Block();
+            foreach (var point in correspondingPoints)
+            {
+                blocksCopy[point.x][point.y] = new Block();
+                // Debug.Log(point.x + "." + point.y + ", " + blocksCopy[point.x][point.y].blockColor);
+                Debug.Log(correspondingPoints.Count);
+            }
 
-            return blocks;
+            return blocksCopy;
         }
     }
 }

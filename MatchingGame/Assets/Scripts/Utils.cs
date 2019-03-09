@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using UnityEngine;
+using System.Collections.Generic;
 
 namespace Match
 {
@@ -10,39 +11,65 @@ namespace Match
             public int y;
         }
 
-        public static bool IsValidPosition(Utils.Point position, int width, int height)
+        public static bool IsValidPosition(Point position, int width, int height)
         {
             if ((position.x >= 0 && position.x < width) && (position.y >= 0 && position.y < height))
-                    return true;
+                return true;
             else
                 return false;
         }
 
-        public static Utils.Point[] SurroundingPositions(Utils.Point target, bool isHexagonal)
+        public static Point[] SurroundingPositions(Point target, bool isHexagonal)
         {
             if (isHexagonal)
             {
-                return new Utils.Point[]
+                return new Point[]
                 {
-                    new Utils.Point { x = target.x++, y = target.y },
-                    new Utils.Point { x = target.x--, y = target.y },
-                    new Utils.Point { x = target.x, y = target.y++ },
-                    new Utils.Point { x = target.x, y = target.y-- },
+                    new Point { x = target.x + 1, y = target.y },
+                    new Point { x = target.x - 1, y = target.y },
+                    new Point { x = target.x, y = target.y + 1 },
+                    new Point { x = target.x, y = target.y - 1 },
 
-                    new Utils.Point { x = target.x++, y = target.y++ },
-                    new Utils.Point { x = target.x--, y = target.y++ },
-                    new Utils.Point { x = target.x++, y = target.y-- },
-                    new Utils.Point { x = target.x--, y = target.y-- },
+                    new Point { x = target.x + 1, y = target.y + 1 },
+                    new Point { x = target.x - 1, y = target.y + 1 },
+                    new Point { x = target.x + 1, y = target.y - 1 },
+                    new Point { x = target.x - 1, y = target.y - 1 },
                 };
             }
             else
-                return new Utils.Point[]
+                return new Point[]
                 {
-                    new Utils.Point { x = target.x++, y = target.y },
-                    new Utils.Point { x = target.x--, y = target.y },
-                    new Utils.Point { x = target.x, y = target.y++ },
-                    new Utils.Point { x = target.x, y = target.y-- },
+                    new Point { x = target.x + 1, y = target.y },
+                    new Point { x = target.x - 1, y = target.y },
+                    new Point { x = target.x, y = target.y + 1 },
+                    new Point { x = target.x, y = target.y - 1 },
                 };
+        }
+
+        public static Point ToPoint(Block block, List<List<Block>> blocks)
+        {
+            foreach (var column in blocks)
+                if (column.Contains(block))
+                    return new Point
+                    {
+                        x = blocks.IndexOf(column),
+                        y = column.IndexOf(block)
+                    };
+
+            throw new System.ArgumentException("The block was not found.");
+        }
+
+        public static Point ToPoint(GameObject block, List<List<GameObject>> blocks)
+        {
+            foreach (var column in blocks)
+                if (column.Contains(block))
+                    return new Point
+                    {
+                        x = blocks.IndexOf(column),
+                        y = column.IndexOf(block)
+                    };
+
+            throw new System.ArgumentException("The asset was not found.");
         }
     }
 }

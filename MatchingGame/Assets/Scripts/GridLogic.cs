@@ -44,7 +44,6 @@ namespace Match
 
         public void Morph()
         {
-            // Remove all blocks with default values.
             foreach (var column in this.blocks)
             {
                 foreach (var block in column)
@@ -52,12 +51,8 @@ namespace Match
                         this.changes.Enqueue(new Change
                         {
                             type = Change.Type.Remove,
-                            position = new Utils.Point
-                            {
-                                x = this.blocks.IndexOf(column),
-                                y = column.IndexOf(block),
-                            },
-                            block = block,
+                            position = Utils.ToPoint(block, this.blocks),
+                            block = block
                         });
 
                 column.RemoveAll(b => b.Equals(new Block()));
@@ -67,20 +62,14 @@ namespace Match
                 while (column.Count < Settings.GridHeight)
                 {
                     var randomBlock = RandomizedColorBlock();
-                    var change = new Change
+                    column.Add(randomBlock);
+
+                    this.changes.Enqueue(new Change
                     {
                         type = Change.Type.Add,
-                        position = new Utils.Point
-                        {
-                            x = this.blocks.IndexOf(column),
-                            y = column.Count
-                        },
+                        position = Utils.ToPoint(randomBlock, this.blocks),
                         block = randomBlock
-                    };
-
-                    // Order matters, change height is picked up from column count.
-                    this.changes.Enqueue(change);
-                    column.Add(randomBlock);
+                    });
                 }
         }
 

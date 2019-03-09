@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,53 +21,42 @@ namespace Match
 
         private void Update()
         {
-            if (!IsCascading())
-            {
-                var input = GetInput();
-                
-                if (input)
-                {
-                    var target = Utils.ToPoint(input, this.assets);
-                    this.logic.ActivateBlock(target);
-                }
-            }
+            var input = GetInput();
+
+            if (!IsCascading() && input)
+                this.logic.ActivateBlock(Utils.ToPoint(input, this.assets));
 
             this.logic.Morph();
-            var changeQueue = this.logic.Changes;
-            foreach (var change in changeQueue)
-                Debug.Log(change.type);
+            var changes = this.logic.Changes;
 
-            if (changeQueue.Count > 0)
+            if (changes.Count > 0)
             {
-                var destroyed = new List<GameObject>();
-                foreach (var change in changeQueue)
-                    if (change.type == GridLogic.Change.Type.Remove)
-                    {
-                        var current = this.assets[change.position.x][change.position.y];
-                        destroyed.Add(current);
-                        this.assets[change.position.x].Remove(current);
-                    }
+                var removeChanges = from change in changes
+                                    where change.type.Equals(GridLogic.Change.Type.Remove)
+                                    select change.position;
 
-                foreach (var asset in destroyed)
-                    Destroy(asset);
-
-                while (changeQueue.Count > 0)
+                var removedAssets = new List<GameObject>();
+                removeChanges.ToList().ForEach(point =>
                 {
-                    var change = changeQueue.Dequeue();
-                    if (change.type == GridLogic.Change.Type.Add)
-                    {
-                        var newAsset = Instantiate(ToGameObject(change.block), this.grid.transform);
-                        newAsset.transform.localPosition = new Vector3(change.position.x * .6f, 6f);
-                        this.assets[change.position.x].Add(newAsset);
-                    }
-                }
+                    var current = this.assets[point.x][point.y];
+                    removedAssets.Add(current);
+                    this.assets[point.x].Remove(current);
+                    Destroy(current);
+                });
+
+                var addChanges = from change in changes
+                                 where change.type.Equals(GridLogic.Change.Type.Add)
+                                 select change;
+
+                addChanges.ToList().ForEach(change =>
+                {
+                    var newAsset = Instantiate(ToGameObject(change.block), this.grid.transform);
+                    newAsset.transform.localPosition = new Vector3(change.position.x * .6f, 6f);
+                    this.assets[change.position.x].Add(newAsset);
+                });
 
                 foreach (var column in this.assets)
-                    foreach (var asset in column)
-                    {
-                        var point = Utils.ToPoint(asset, this.assets);
-                        StartCoroutine(Move(asset, new Vector3(point.x * .6f, point.y * .6f)));
-                    }
+                    column.ForEach(a => StartCoroutine(Move(a, new Vector3(this.assets.IndexOf(column) * .6f, column.IndexOf(a) * .6f))));
             }
         }
 

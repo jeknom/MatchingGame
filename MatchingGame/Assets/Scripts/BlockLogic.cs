@@ -34,11 +34,7 @@ namespace Match
             }
 
             foreach (var point in correspondingPoints)
-            {
                 blocksCopy[point.x][point.y] = new Block();
-                // Debug.Log(point.x + "." + point.y + ", " + blocksCopy[point.x][point.y].blockColor);
-                Debug.Log(correspondingPoints.Count);
-            }
 
             return blocksCopy;
         }

@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: ecb8d59b6130f43979253927fee93c3a
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Lovic
+  fontNames:
+  - Lovic
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 75db9457780b24d7f8a9f94ab409e556, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

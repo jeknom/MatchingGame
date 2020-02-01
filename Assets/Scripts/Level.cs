@@ -6,52 +6,6 @@ using DG.Tweening;
 
 namespace Game
 {
-    public struct Block
-    {
-        public enum Type
-        {
-            Red,
-            Yellow,
-            Blue,
-            Green
-        }
-
-        public Type type;
-    }
-
-    public class Gameboard
-    {
-        public struct Coord
-        {
-            public int x;
-            public int y;
-        }
-
-        List<Block> blocks = new List<Block>();
-        int width;
-        int height;
-
-        public Gameboard(int width, int height)
-        {
-            this.width = width;
-            this.height = height;
-        }
-
-        int ToIndex(Coord coord)
-        {
-            return coord.y * this.width + coord.x;
-        }
-
-        Coord ToCoord(int index)
-        {
-            return new Coord()
-            {
-                y = index / this.width,
-                x = index % this.width
-            };
-        }
-    }
-
     public class Level : MonoBehaviour
     {
         [SerializeField] List<LevelData> levels = new List<LevelData>();
@@ -65,17 +19,19 @@ namespace Game
             {
                 if (!level.hasBeenWon)
                 {
-                    PlayLevel(level);
+                    Play(level);
                 }
             }
         }
 
-        void PlayLevel(LevelData data)
+        void Play(LevelData data)
         {
-            this.StartCoroutine(this.ShowLevelIntro(data.levelName));
+            this.StartCoroutine(this.LevelIntroRoutine(data.levelName));
+
+            var gameBoard = new Gameboard(width: 5, height: 5);
         }
 
-        IEnumerator ShowLevelIntro(string levelName)
+        IEnumerator LevelIntroRoutine(string levelName)
         {
             this.levelNameText.text = levelName;
 
